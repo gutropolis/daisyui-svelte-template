@@ -288,42 +288,33 @@
 
 					<p class="text-sm text-gray-700 mb-4">Please specify:</p>
 
-					<div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-						<label
-							class="label cursor-pointer justify-start gap-3 p-3 border rounded-lg hover:bg-gray-50"
-						>
+					<div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+						<label class="flex items-start gap-3 cursor-pointer">
 							<input
-								type="radio"
+								type="checkbox"
 								name="researchType"
 								value="basic"
-								bind:group={researchType}
-								class="radio radio-sm"
+								class="checkbox checkbox-sm mt-1"
 							/>
 							<span class="label-text">Basic or bench research</span>
 						</label>
 
-						<label
-							class="label cursor-pointer justify-start gap-3 p-3 border rounded-lg hover:bg-gray-50"
-						>
+						<label class="flex items-start gap-3 cursor-pointer">
 							<input
-								type="radio"
+								type="checkbox"
 								name="researchType"
 								value="clinical"
-								bind:group={researchType}
-								class="radio radio-sm"
+								class="checkbox checkbox-sm mt-1"
 							/>
 							<span class="label-text">Clinical research study or trial</span>
 						</label>
 
-						<label
-							class="label cursor-pointer justify-start gap-3 p-3 border rounded-lg hover:bg-gray-50"
-						>
+						<label class="flex items-start gap-3 cursor-pointer">
 							<input
-								type="radio"
+								type="checkbox"
 								name="researchType"
 								value="translational1"
-								bind:group={researchType}
-								class="radio radio-sm"
+								class="checkbox checkbox-sm mt-1"
 							/>
 							<span class="label-text text-sm"
 								>Translational research 1 (applying discoveries to the development of trials and
@@ -331,15 +322,12 @@
 							>
 						</label>
 
-						<label
-							class="label cursor-pointer justify-start gap-3 p-3 border rounded-lg hover:bg-gray-50"
-						>
+						<label class="flex items-start gap-3 cursor-pointer">
 							<input
-								type="radio"
+								type="checkbox"
 								name="researchType"
 								value="translational2"
-								bind:group={researchType}
-								class="radio radio-sm"
+								class="checkbox checkbox-sm mt-1"
 							/>
 							<span class="label-text text-sm"
 								>Translational research 2 (enhancing adoption of research findings and best
@@ -347,41 +335,32 @@
 							>
 						</label>
 
-						<label
-							class="label cursor-pointer justify-start gap-3 p-3 border rounded-lg hover:bg-gray-50"
-						>
+						<label class="flex items-start gap-3 cursor-pointer">
 							<input
-								type="radio"
+								type="checkbox"
 								name="researchType"
 								value="behavioral"
-								bind:group={researchType}
-								class="radio radio-sm"
+								class="checkbox checkbox-sm mt-1"
 							/>
 							<span class="label-text">Behavioral or psychosocial research study</span>
 						</label>
 
-						<label
-							class="label cursor-pointer justify-start gap-3 p-3 border rounded-lg hover:bg-gray-50"
-						>
+						<label class="flex items-start gap-3 cursor-pointer">
 							<input
-								type="radio"
+								type="checkbox"
 								name="researchType"
 								value="epidemiology"
-								bind:group={researchType}
-								class="radio radio-sm"
+								class="checkbox checkbox-sm mt-1"
 							/>
 							<span class="label-text">Epidemiology</span>
 						</label>
 
-						<label
-							class="label cursor-pointer justify-start gap-3 p-3 border rounded-lg hover:bg-gray-50"
-						>
+						<label class="flex items-start gap-3 cursor-pointer">
 							<input
-								type="radio"
+								type="checkbox"
 								name="researchType"
 								value="repository"
-								bind:group={researchType}
-								class="radio radio-sm"
+								class="checkbox checkbox-sm mt-1"
 							/>
 							<span class="label-text text-sm"
 								>Repository (developing a data or specimen repository for future use by
@@ -389,15 +368,12 @@
 							>
 						</label>
 
-						<label
-							class="label cursor-pointer justify-start gap-3 p-3 border rounded-lg hover:bg-gray-50"
-						>
+						<label class="flex items-start gap-3 cursor-pointer">
 							<input
-								type="radio"
+								type="checkbox"
 								name="researchType"
 								value="other"
-								bind:group={researchType}
-								class="radio radio-sm"
+								class="checkbox checkbox-sm mt-1"
 							/>
 							<span class="label-text">Other</span>
 						</label>

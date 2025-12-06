@@ -3,3 +3,11 @@
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
 @plugin 'daisyui';
+
+/* Global utility classes used across components */
+.btn {
+	@apply inline-flex items-center justify-center rounded px-4 py-2;
+}
+.btn-ghost {
+	@apply border border-gray-200 bg-white text-sm text-gray-700;
+}
