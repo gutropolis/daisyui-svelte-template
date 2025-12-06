@@ -3,6 +3,7 @@
 	import Sidebar from '$lib/components/common/Sidebar.svelte';
 	import Header from '$lib/components/common/Header.svelte';
 	import Footer from '$lib/components/common/Footer.svelte';
+	import Breadcrumb from '$lib/components/common/Breadcrumb.svelte';
 	let { children } = $props();
 	let sidebarOpen = $state(false);
 
@@ -22,6 +23,7 @@
 
 		<!-- Page Content -->
 		<main class="flex-1 overflow-auto p-6">
+			<Breadcrumb />
 			{@render children()}
 		</main>
 

@@ -56,7 +56,6 @@
 				/>
 			</svg>
 		</button>
-		<Breadcrumb />
 	</div>
 
 	<!-- Right Side Actions -->

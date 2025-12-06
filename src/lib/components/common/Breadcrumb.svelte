@@ -27,7 +27,7 @@
 	$: breadcrumbs = generateBreadcrumbs();
 </script>
 
-<nav aria-label="Breadcrumb" class="flex items-center gap-2 text-sm">
+<nav aria-label="Breadcrumb" class="flex items-center gap-2 text-sm my-3">
 	{#each breadcrumbs as item, index}
 		{#if item.href}
 			<a
