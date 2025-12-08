@@ -1,11 +1,19 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
+	import { register } from '$lib/auth';
 
 	let { form } = $props();
 
 	let showPassword = $state(false);
 	let showConfirmPassword = $state(false);
 	let agreedToTerms = $state(false);
+	let loading = $state(false);
+	let error = $state<string | null>(null);
+	let success = $state(false);
+	let contactNumber = $state('');
+	let fullName = $state('');
+	let email = $state('');
+	let password = $state('');
+	let confirmPassword = $state('');
 
 	function togglePasswordVisibility() {
 		showPassword = !showPassword;
@@ -13,6 +21,54 @@
 
 	function toggleConfirmPasswordVisibility() {
 		showConfirmPassword = !showConfirmPassword;
+	}
+
+	async function handleRegister(e: SubmitEvent) {
+		e.preventDefault();
+		error = null;
+		success = false;
+
+		// Validation
+		if (!email || !password || !fullName) {
+			error = 'Please fill in all required fields';
+			return;
+		}
+
+		if (password !== confirmPassword) {
+			error = 'Passwords do not match';
+			return;
+		}
+
+		if (password.length < 8) {
+			error = 'Password must be at least 8 characters';
+			return;
+		}
+
+		if (!agreedToTerms) {
+			error = 'You must agree to the terms & conditions';
+			return;
+		}
+
+		loading = true;
+
+		try {
+			const result = await register(email, password, fullName, contactNumber || undefined);
+
+			if (result.success) {
+				success = true;
+				error = null;
+				// Redirect to dashboard after 2 seconds
+				setTimeout(() => {
+					window.location.href = '/dashboard';
+				}, 2000);
+			} else {
+				error = result.message || 'Registration failed. Please try again.';
+			}
+		} catch (err) {
+			error = err instanceof Error ? err.message : 'An unexpected error occurred';
+		} finally {
+			loading = false;
+		}
 	}
 </script>
 
@@ -24,10 +80,23 @@
 				<div class="text-4xl text-primary">💜</div>
 			</div>
 			<h1 class="text-2xl font-bold text-gray-900">Create Account 🚀</h1>
-			<p class="text-sm text-gray-600">Start your adventure with Vuexy</p>
+			<p class="text-sm text-gray-600">Start your healthcare journey today</p>
 		</div>
 
+		<!-- Success Message -->
+		{#if success}
+			<div class="alert alert-success alert-sm">
+				<span>✓ Account created successfully! Redirecting...</span>
+			</div>
+		{/if}
+
 		<!-- Error Messages -->
+		{#if error}
+			<div class="alert alert-error alert-sm">
+				<span>{error}</span>
+			</div>
+		{/if}
+
 		{#if form?.missing}
 			<div class="alert alert-error alert-sm">
 				<span>Please fill in all required fields</span>
@@ -45,58 +114,75 @@
 		{/if}
 
 		<!-- Registration Form -->
-		<form method="POST" action="?/register" use:enhance class="space-y-4">
+		<form onsubmit={handleRegister} class="space-y-4">
 			<!-- Full Name Input -->
 			<div class="form-control">
 				<label class="label" for="fullname">
-					<span class="label-text text-gray-700">Full Name</span>
+					<span class="label-text text-gray-700">Full Name <span class="text-red-500">*</span></span>
 				</label>
 				<input
 					id="fullname"
-					name="fullname"
 					type="text"
 					placeholder="Enter your full name"
 					class="input input-bordered w-full focus:outline-none focus:border-primary"
-					value={form?.fullname ?? ''}
+					bind:value={fullName}
 					required
+					disabled={loading}
 				/>
 			</div>
 
 			<!-- Email Input -->
 			<div class="form-control">
 				<label class="label" for="email">
-					<span class="label-text text-gray-700">Email</span>
+					<span class="label-text text-gray-700">Email <span class="text-red-500">*</span></span>
 				</label>
 				<input
 					id="email"
-					name="email"
 					type="email"
 					placeholder="Enter your email"
 					class="input input-bordered w-full focus:outline-none focus:border-primary"
-					value={form?.email ?? ''}
+					bind:value={email}
 					required
+					disabled={loading}
+				/>
+			</div>
+
+			<!-- Contact Number Input -->
+			<div class="form-control">
+				<label class="label" for="contactNumber">
+					<span class="label-text text-gray-700">Contact Number</span>
+				</label>
+				<input
+					id="contactNumber"
+					type="tel"
+					placeholder="Enter your contact number (optional)"
+					class="input input-bordered w-full focus:outline-none focus:border-primary"
+					bind:value={contactNumber}
+					disabled={loading}
 				/>
 			</div>
 
 			<!-- Password Input -->
 			<div class="form-control">
 				<label class="label" for="password">
-					<span class="label-text text-gray-700">Password</span>
+					<span class="label-text text-gray-700">Password <span class="text-red-500">*</span></span>
 				</label>
 				<div class="relative">
 					<input
 						id="password"
-						name="password"
 						type={showPassword ? 'text' : 'password'}
 						placeholder="••••••••"
 						class="input input-bordered w-full focus:outline-none focus:border-primary"
+						bind:value={password}
 						required
+						disabled={loading}
 					/>
 					<button
 						type="button"
 						onclick={togglePasswordVisibility}
 						class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
 						tabindex="-1"
+						disabled={loading}
 					>
 						{#if showPassword}
 							<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -130,22 +216,24 @@
 			<!-- Confirm Password Input -->
 			<div class="form-control">
 				<label class="label" for="confirmPassword">
-					<span class="label-text text-gray-700">Confirm Password</span>
+					<span class="label-text text-gray-700">Confirm Password <span class="text-red-500">*</span></span>
 				</label>
 				<div class="relative">
 					<input
 						id="confirmPassword"
-						name="confirmPassword"
 						type={showConfirmPassword ? 'text' : 'password'}
 						placeholder="••••••••"
 						class="input input-bordered w-full focus:outline-none focus:border-primary"
+						bind:value={confirmPassword}
 						required
+						disabled={loading}
 					/>
 					<button
 						type="button"
 						onclick={toggleConfirmPasswordVisibility}
 						class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
 						tabindex="-1"
+						disabled={loading}
 					>
 						{#if showConfirmPassword}
 							<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -180,11 +268,11 @@
 			<label class="label cursor-pointer" for="terms">
 				<input
 					id="terms"
-					name="terms"
 					type="checkbox"
 					bind:checked={agreedToTerms}
 					class="checkbox checkbox-sm checkbox-primary"
 					required
+					disabled={loading}
 				/>
 				<span class="label-text ml-2 text-sm text-gray-700">
 					I agree to the <a href="#" class="link link-primary">Terms & Conditions</a>
@@ -192,8 +280,13 @@
 			</label>
 
 			<!-- Register Button -->
-			<button type="submit" class="btn btn-primary w-full text-white font-semibold">
-				Create Account
+			<button type="submit" class="btn btn-primary w-full text-white font-semibold" disabled={loading}>
+				{#if loading}
+					<span class="loading loading-spinner loading-sm"></span>
+					Creating Account...
+				{:else}
+					Create Account
+				{/if}
 			</button>
 		</form>
 
@@ -312,13 +405,23 @@
 		box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
 	}
 
+	.input:disabled {
+		opacity: 0.6;
+		cursor: not-allowed;
+	}
+
 	.btn-primary {
 		background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
 		border: none;
 	}
 
-	.btn-primary:hover {
+	.btn-primary:hover:not(:disabled) {
 		opacity: 0.9;
+	}
+
+	.btn-primary:disabled {
+		opacity: 0.7;
+		cursor: not-allowed;
 	}
 
 	.link-primary {
@@ -338,5 +441,11 @@
 		background-color: #fee2e2;
 		color: #dc2626;
 		border: 1px solid #fecaca;
+	}
+
+	.alert-success {
+		background-color: #dcfce7;
+		color: #166534;
+		border: 1px solid #bbf7d0;
 	}
 </style>

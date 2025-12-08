@@ -1,10 +1,14 @@
 <script lang="ts">
-	interface Props {
-		sidebarOpen: boolean;
-		onToggleSidebar: () => void;
-	}
+	import type { Props } from "$lib/modal/theme";
+	import { authStore } from "$lib/stores/auth";
+	import { goto } from "$app/navigation";
 
 	const { sidebarOpen, onToggleSidebar } = $props<Props>();
+
+	async function handleLogout() {
+		await authStore.logout();
+		goto('/login');
+	}
 </script>
 
 <!-- Sidebar -->
@@ -53,9 +57,27 @@
 					d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
 				/>
 			</svg>
-			<span class="text-sm font-medium text-gray-700">Logged in as Ismanandhar</span>
+			<span class="text-sm font-medium text-gray-700">
+				Logged in as {$authStore.user?.fullName || 'User'}<div class="mt-1 inline-block">
+							<span
+								class="px-3 py-1 rounded-full text-sm font-semibold
+								{$authStore?.user?.role === 'SUPERADMIN'
+									? 'bg-red-100 text-red-800'
+									: $authStore?.user?.role === 'ADMIN'
+										? 'bg-orange-100 text-orange-800'
+										: 'bg-blue-100 text-blue-800'}"
+							>
+								{$authStore?.user?.role}
+							</span>
+						</div>
+			</span>
 		</div>
-		<a href="#" class="text-sm text-red-600 hover:text-red-700 font-medium">Log out</a>
+		<button
+			onclick={handleLogout}
+			class="text-sm text-red-600 hover:text-red-700 font-medium w-full text-left"
+		>
+			Log out
+		</button>
 	</div>
 
 	<!-- My Projects Card -->

@@ -27,7 +27,7 @@ export {};
 
 declare module "$app/types" {
 	export interface AppTypes {
-		RouteId(): "/(public)/(auth)" | "/(public)" | "/(app)" | "/" | "/(public)/(auth)/2-step-verification" | "/(app)/admin" | "/demo" | "/demo/lucia" | "/demo/lucia/login" | "/(app)/empty" | "/(public)/(auth)/forgot-password" | "/(public)/(auth)/login" | "/(app)/my-projects" | "/(app)/project" | "/(app)/project/new" | "/(public)/(auth)/register";
+		RouteId(): "/(public)/(auth)" | "/(public)" | "/(app)" | "/" | "/(public)/(auth)/2-step-verification" | "/(app)/admin" | "/(app)/dashboard" | "/demo" | "/demo/lucia" | "/demo/lucia/login" | "/(app)/empty" | "/(public)/(auth)/forgot-password" | "/(public)/(auth)/login" | "/(app)/my-projects" | "/(app)/project" | "/(app)/project/new" | "/(public)/(auth)/register" | "/test-graphql";
 		RouteParams(): {
 			
 		};
@@ -38,6 +38,7 @@ declare module "$app/types" {
 			"/": Record<string, never>;
 			"/(public)/(auth)/2-step-verification": Record<string, never>;
 			"/(app)/admin": Record<string, never>;
+			"/(app)/dashboard": Record<string, never>;
 			"/demo": Record<string, never>;
 			"/demo/lucia": Record<string, never>;
 			"/demo/lucia/login": Record<string, never>;
@@ -47,9 +48,10 @@ declare module "$app/types" {
 			"/(app)/my-projects": Record<string, never>;
 			"/(app)/project": Record<string, never>;
 			"/(app)/project/new": Record<string, never>;
-			"/(public)/(auth)/register": Record<string, never>
+			"/(public)/(auth)/register": Record<string, never>;
+			"/test-graphql": Record<string, never>
 		};
-		Pathname(): "/" | "/2-step-verification" | "/2-step-verification/" | "/admin" | "/admin/" | "/demo" | "/demo/" | "/demo/lucia" | "/demo/lucia/" | "/demo/lucia/login" | "/demo/lucia/login/" | "/empty" | "/empty/" | "/forgot-password" | "/forgot-password/" | "/login" | "/login/" | "/my-projects" | "/my-projects/" | "/project" | "/project/" | "/project/new" | "/project/new/" | "/register" | "/register/";
+		Pathname(): "/" | "/2-step-verification" | "/2-step-verification/" | "/admin" | "/admin/" | "/dashboard" | "/dashboard/" | "/demo" | "/demo/" | "/demo/lucia" | "/demo/lucia/" | "/demo/lucia/login" | "/demo/lucia/login/" | "/empty" | "/empty/" | "/forgot-password" | "/forgot-password/" | "/login" | "/login/" | "/my-projects" | "/my-projects/" | "/project" | "/project/" | "/project/new" | "/project/new/" | "/register" | "/register/" | "/test-graphql" | "/test-graphql/";
 		ResolvedPathname(): `${"" | `/${string}`}${ReturnType<AppTypes['Pathname']>}`;
 		Asset(): "/robots.txt" | string & {};
 	}

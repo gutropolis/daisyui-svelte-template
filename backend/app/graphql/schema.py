@@ -1,0 +1,31 @@
+"""GraphQL Schema combining all modules."""
+import strawberry
+from typing import Optional
+
+from app.graphql.auth import AuthQuery, AuthMutation
+from app.graphql.user import UserQuery, UserMutation
+from app.graphql.project import ProjectQuery, ProjectMutation
+
+
+@strawberry.type
+class Query(AuthQuery, UserQuery, ProjectQuery):
+    """Root Query type combining all module queries."""
+
+    @strawberry.field
+    def hello(self) -> str:
+        """Simple hello world query."""
+        return "Welcome to DaisyUI Healthcare GraphQL API!"
+
+
+@strawberry.type
+class Mutation(AuthMutation, UserMutation, ProjectMutation):
+    """Root Mutation type combining all module mutations."""
+
+    @strawberry.mutation
+    def ping(self) -> str:
+        """Ping endpoint for health check."""
+        return "pong"
+
+
+# Create the schema
+schema = strawberry.Schema(query=Query, mutation=Mutation)

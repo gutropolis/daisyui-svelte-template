@@ -1,9 +1,16 @@
 {
 	"/(public)/(auth)": [],
-	"/(app)": [],
+	"/(app)": [
+		"src/routes/(app)/+layout.ts"
+	],
 	"/": [],
 	"/(public)/(auth)/2-step-verification": [],
-	"/(app)/admin": [],
+	"/(app)/admin": [
+		"src/routes/(app)/+layout.ts"
+	],
+	"/(app)/dashboard": [
+		"src/routes/(app)/+layout.ts"
+	],
 	"/demo": [],
 	"/demo/lucia": [
 		"src/routes/demo/lucia/+page.server.ts"
@@ -11,10 +18,17 @@
 	"/demo/lucia/login": [
 		"src/routes/demo/lucia/login/+page.server.ts"
 	],
-	"/(app)/empty": [],
+	"/(app)/empty": [
+		"src/routes/(app)/+layout.ts"
+	],
 	"/(public)/(auth)/forgot-password": [],
 	"/(public)/(auth)/login": [],
-	"/(app)/my-projects": [],
-	"/(app)/project/new": [],
-	"/(public)/(auth)/register": []
+	"/(app)/my-projects": [
+		"src/routes/(app)/+layout.ts"
+	],
+	"/(app)/project/new": [
+		"src/routes/(app)/+layout.ts"
+	],
+	"/(public)/(auth)/register": [],
+	"/test-graphql": []
 }

@@ -11,10 +11,12 @@ type OutputDataShape<T> = MaybeWithVoid<Omit<App.PageData, RequiredKeys<T>> & Pa
 type EnsureDefined<T> = T extends null | undefined ? {} : T;
 type OptionalUnion<U extends Record<string, any>, A extends keyof U = U extends U ? keyof U : never> = U extends unknown ? { [P in Exclude<A, keyof U>]?: never } & U : never;
 export type Snapshot<T = any> = Kit.Snapshot<T>;
-type LayoutRouteId = RouteId | "/(app)/admin" | "/(app)/empty" | "/(app)/my-projects" | "/(app)/project/new"
+type LayoutRouteId = RouteId | "/(app)/admin" | "/(app)/dashboard" | "/(app)/empty" | "/(app)/my-projects" | "/(app)/project/new"
 type LayoutParams = RouteParams & {  }
 type LayoutParentData = EnsureDefined<import('../$types.js').LayoutData>;
 
 export type LayoutServerData = null;
-export type LayoutData = Expand<LayoutParentData>;
+export type LayoutLoad<OutputData extends OutputDataShape<LayoutParentData> = OutputDataShape<LayoutParentData>> = Kit.Load<LayoutParams, LayoutServerData, LayoutParentData, OutputData, LayoutRouteId>;
+export type LayoutLoadEvent = Parameters<LayoutLoad>[0];
+export type LayoutData = Expand<Omit<LayoutParentData, keyof LayoutParentData & EnsureDefined<LayoutServerData>> & OptionalUnion<EnsureDefined<LayoutParentData & EnsureDefined<LayoutServerData>>>>;
 export type LayoutProps = { params: LayoutParams; data: LayoutData; children: import("svelte").Snippet }
