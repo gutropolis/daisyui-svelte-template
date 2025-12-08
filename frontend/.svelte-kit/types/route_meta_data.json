@@ -1,0 +1,20 @@
+{
+	"/(public)/(auth)": [],
+	"/(app)": [],
+	"/": [],
+	"/(public)/(auth)/2-step-verification": [],
+	"/(app)/admin": [],
+	"/demo": [],
+	"/demo/lucia": [
+		"src/routes/demo/lucia/+page.server.ts"
+	],
+	"/demo/lucia/login": [
+		"src/routes/demo/lucia/login/+page.server.ts"
+	],
+	"/(app)/empty": [],
+	"/(public)/(auth)/forgot-password": [],
+	"/(public)/(auth)/login": [],
+	"/(app)/my-projects": [],
+	"/(app)/project/new": [],
+	"/(public)/(auth)/register": []
+}
