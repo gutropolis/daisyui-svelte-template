@@ -5,10 +5,12 @@ from typing import Optional
 from app.graphql.auth import AuthQuery, AuthMutation
 from app.graphql.user import UserQuery, UserMutation
 from app.graphql.project import ProjectQuery, ProjectMutation
+from app.graphql.plan_feature import PlanFeatureQuery, PlanFeatureMutation
+from app.graphql.permission import PermissionQuery, PermissionMutation
 
 
 @strawberry.type
-class Query(AuthQuery, UserQuery, ProjectQuery):
+class Query(AuthQuery, UserQuery, ProjectQuery, PlanFeatureQuery, PermissionQuery):
     """Root Query type combining all module queries."""
 
     @strawberry.field
@@ -18,7 +20,7 @@ class Query(AuthQuery, UserQuery, ProjectQuery):
 
 
 @strawberry.type
-class Mutation(AuthMutation, UserMutation, ProjectMutation):
+class Mutation(AuthMutation, UserMutation, ProjectMutation, PlanFeatureMutation, PermissionMutation):
     """Root Mutation type combining all module mutations."""
 
     @strawberry.mutation

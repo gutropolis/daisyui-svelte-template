@@ -8,6 +8,12 @@
 	"/(app)/admin": [
 		"src/routes/(app)/+layout.ts"
 	],
+	"/(app)/admin/permission": [
+		"src/routes/(app)/+layout.ts"
+	],
+	"/(app)/admin/plan/feature": [
+		"src/routes/(app)/+layout.ts"
+	],
 	"/(app)/dashboard": [
 		"src/routes/(app)/+layout.ts"
 	],

@@ -14,8 +14,8 @@ from app.routers import health
 Base.metadata.create_all(bind=engine)
 
 
-def get_db_for_graphql():
-    """Get database session for GraphQL context."""
+async def get_context():
+    """Get GraphQL context with database session."""
     db = SessionLocal()
     try:
         return {"db": db}
@@ -56,7 +56,7 @@ app.include_router(health.router)
 # GraphQL router with context
 graphql_app = GraphQLRouter(
     schema,
-    context_getter=lambda: get_db_for_graphql(),
+    context_getter=get_context,
 )
 app.include_router(graphql_app, prefix="/graphql")
 
