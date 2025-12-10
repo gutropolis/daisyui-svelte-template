@@ -8,10 +8,22 @@
 	"/(app)/admin": [
 		"src/routes/(app)/+layout.ts"
 	],
+	"/(app)/admin/feature": [
+		"src/routes/(app)/+layout.ts"
+	],
 	"/(app)/admin/permission": [
 		"src/routes/(app)/+layout.ts"
 	],
-	"/(app)/admin/plan/feature": [
+	"/(app)/admin/plan": [
+		"src/routes/(app)/+layout.ts"
+	],
+	"/(app)/admin/plan/new": [
+		"src/routes/(app)/+layout.ts"
+	],
+	"/(app)/admin/plan/[id]": [
+		"src/routes/(app)/+layout.ts"
+	],
+	"/(app)/admin/plan/[id]/edit": [
 		"src/routes/(app)/+layout.ts"
 	],
 	"/(app)/dashboard": [
