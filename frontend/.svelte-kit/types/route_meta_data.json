@@ -26,6 +26,15 @@
 	"/(app)/admin/plan/[id]/edit": [
 		"src/routes/(app)/+layout.ts"
 	],
+	"/(app)/admin/project": [
+		"src/routes/(app)/+layout.ts"
+	],
+	"/(app)/admin/project/add": [
+		"src/routes/(app)/+layout.ts"
+	],
+	"/(app)/admin/project/edit": [
+		"src/routes/(app)/+layout.ts"
+	],
 	"/(app)/dashboard": [
 		"src/routes/(app)/+layout.ts"
 	],

@@ -27,7 +27,7 @@ export {};
 
 declare module "$app/types" {
 	export interface AppTypes {
-		RouteId(): "/(public)/(auth)" | "/(public)" | "/(app)" | "/" | "/(public)/(auth)/2-step-verification" | "/(app)/admin" | "/(app)/admin/feature" | "/(app)/admin/permission" | "/(app)/admin/permission/Component" | "/(app)/admin/plan" | "/(app)/admin/plan/components" | "/(app)/admin/plan/new" | "/(app)/admin/plan/[id]" | "/(app)/admin/plan/[id]/edit" | "/(app)/dashboard" | "/demo" | "/demo/lucia" | "/demo/lucia/login" | "/(app)/empty" | "/(public)/(auth)/forgot-password" | "/(public)/(auth)/login" | "/(app)/my-projects" | "/(app)/project" | "/(app)/project/new" | "/(public)/(auth)/register" | "/test-graphql";
+		RouteId(): "/(public)/(auth)" | "/(public)" | "/(app)" | "/" | "/(public)/(auth)/2-step-verification" | "/(app)/admin" | "/(app)/admin/feature" | "/(app)/admin/permission" | "/(app)/admin/permission/Component" | "/(app)/admin/plan" | "/(app)/admin/plan/components" | "/(app)/admin/plan/new" | "/(app)/admin/plan/[id]" | "/(app)/admin/plan/[id]/edit" | "/(app)/admin/project" | "/(app)/admin/project/add" | "/(app)/admin/project/edit" | "/(app)/dashboard" | "/demo" | "/demo/lucia" | "/demo/lucia/login" | "/(app)/empty" | "/(public)/(auth)/forgot-password" | "/(public)/(auth)/login" | "/(app)/my-projects" | "/(app)/project" | "/(app)/project/new" | "/(public)/(auth)/register" | "/test-graphql";
 		RouteParams(): {
 			"/(app)/admin/plan/[id]": { id: string };
 			"/(app)/admin/plan/[id]/edit": { id: string }
@@ -47,6 +47,9 @@ declare module "$app/types" {
 			"/(app)/admin/plan/new": Record<string, never>;
 			"/(app)/admin/plan/[id]": { id: string };
 			"/(app)/admin/plan/[id]/edit": { id: string };
+			"/(app)/admin/project": Record<string, never>;
+			"/(app)/admin/project/add": Record<string, never>;
+			"/(app)/admin/project/edit": Record<string, never>;
 			"/(app)/dashboard": Record<string, never>;
 			"/demo": Record<string, never>;
 			"/demo/lucia": Record<string, never>;
@@ -60,7 +63,7 @@ declare module "$app/types" {
 			"/(public)/(auth)/register": Record<string, never>;
 			"/test-graphql": Record<string, never>
 		};
-		Pathname(): "/" | "/2-step-verification" | "/2-step-verification/" | "/admin" | "/admin/" | "/admin/feature" | "/admin/feature/" | "/admin/permission" | "/admin/permission/" | "/admin/permission/Component" | "/admin/permission/Component/" | "/admin/plan" | "/admin/plan/" | "/admin/plan/components" | "/admin/plan/components/" | "/admin/plan/new" | "/admin/plan/new/" | `/admin/plan/${string}` & {} | `/admin/plan/${string}/` & {} | `/admin/plan/${string}/edit` & {} | `/admin/plan/${string}/edit/` & {} | "/dashboard" | "/dashboard/" | "/demo" | "/demo/" | "/demo/lucia" | "/demo/lucia/" | "/demo/lucia/login" | "/demo/lucia/login/" | "/empty" | "/empty/" | "/forgot-password" | "/forgot-password/" | "/login" | "/login/" | "/my-projects" | "/my-projects/" | "/project" | "/project/" | "/project/new" | "/project/new/" | "/register" | "/register/" | "/test-graphql" | "/test-graphql/";
+		Pathname(): "/" | "/2-step-verification" | "/2-step-verification/" | "/admin" | "/admin/" | "/admin/feature" | "/admin/feature/" | "/admin/permission" | "/admin/permission/" | "/admin/permission/Component" | "/admin/permission/Component/" | "/admin/plan" | "/admin/plan/" | "/admin/plan/components" | "/admin/plan/components/" | "/admin/plan/new" | "/admin/plan/new/" | `/admin/plan/${string}` & {} | `/admin/plan/${string}/` & {} | `/admin/plan/${string}/edit` & {} | `/admin/plan/${string}/edit/` & {} | "/admin/project" | "/admin/project/" | "/admin/project/add" | "/admin/project/add/" | "/admin/project/edit" | "/admin/project/edit/" | "/dashboard" | "/dashboard/" | "/demo" | "/demo/" | "/demo/lucia" | "/demo/lucia/" | "/demo/lucia/login" | "/demo/lucia/login/" | "/empty" | "/empty/" | "/forgot-password" | "/forgot-password/" | "/login" | "/login/" | "/my-projects" | "/my-projects/" | "/project" | "/project/" | "/project/new" | "/project/new/" | "/register" | "/register/" | "/test-graphql" | "/test-graphql/";
 		ResolvedPathname(): `${"" | `/${string}`}${ReturnType<AppTypes['Pathname']>}`;
 		Asset(): "/robots.txt" | string & {};
 	}

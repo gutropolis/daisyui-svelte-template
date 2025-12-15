@@ -26,14 +26,17 @@ export const nodes = [
 	() => import('./nodes/20'),
 	() => import('./nodes/21'),
 	() => import('./nodes/22'),
-	() => import('./nodes/23')
+	() => import('./nodes/23'),
+	() => import('./nodes/24'),
+	() => import('./nodes/25'),
+	() => import('./nodes/26')
 ];
 
 export const server_loads = [];
 
 export const dictionary = {
 		"/": [4],
-		"/(public)/(auth)/2-step-verification": [16,[3]],
+		"/(public)/(auth)/2-step-verification": [19,[3]],
 		"/(app)/admin": [5,[2]],
 		"/(app)/admin/feature": [6,[2]],
 		"/(app)/admin/permission": [7,[2]],
@@ -41,17 +44,20 @@ export const dictionary = {
 		"/(app)/admin/plan/new": [9,[2]],
 		"/(app)/admin/plan/[id]": [10,[2]],
 		"/(app)/admin/plan/[id]/edit": [11,[2]],
-		"/(app)/dashboard": [12,[2]],
-		"/demo": [20],
-		"/demo/lucia": [~21],
-		"/demo/lucia/login": [~22],
-		"/(app)/empty": [13,[2]],
-		"/(public)/(auth)/forgot-password": [17,[3]],
-		"/(public)/(auth)/login": [18,[3]],
-		"/(app)/my-projects": [14,[2]],
-		"/(app)/project/new": [15,[2]],
-		"/(public)/(auth)/register": [19,[3]],
-		"/test-graphql": [23]
+		"/(app)/admin/project": [12,[2]],
+		"/(app)/admin/project/add": [13,[2]],
+		"/(app)/admin/project/edit": [14,[2]],
+		"/(app)/dashboard": [15,[2]],
+		"/demo": [23],
+		"/demo/lucia": [~24],
+		"/demo/lucia/login": [~25],
+		"/(app)/empty": [16,[2]],
+		"/(public)/(auth)/forgot-password": [20,[3]],
+		"/(public)/(auth)/login": [21,[3]],
+		"/(app)/my-projects": [17,[2]],
+		"/(app)/project/new": [18,[2]],
+		"/(public)/(auth)/register": [22,[3]],
+		"/test-graphql": [26]
 	};
 
 export const hooks = {
