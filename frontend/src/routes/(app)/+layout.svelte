@@ -49,7 +49,9 @@
 		<Sidebar {sidebarOpen} onToggleSidebar={toggleSidebar} />
 
 		<!-- Main Content Area -->
-		<div class="flex-1 flex flex-col">
+		<div class={`flex-1 flex flex-col transition-[margin] duration-300 ${
+			sidebarOpen ? 'lg:ml-64' : 'lg:ml-20'
+		}`}>
 			<!-- Header Component -->
 			<Header {sidebarOpen} onToggleSidebar={toggleSidebar} />
 

@@ -40,6 +40,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'apps.project',
+    'apps.projectform', 
+    'apps.record',
+    'apps.compliance',
+    'apps.datavalidation',
 ]
 
 MIDDLEWARE = [

@@ -1,7 +1,7 @@
 <script lang="ts">
-	import type { Props } from "$lib/modal/theme";
-	import { authStore } from "$lib/stores/auth";
-	import { goto } from "$app/navigation";
+	import type { Props } from '$lib/modal/theme';
+	import { authStore } from '$lib/stores/auth';
+	import { goto } from '$app/navigation';
 
 	const { sidebarOpen, onToggleSidebar } = $props<Props>();
 
@@ -13,18 +13,18 @@
 
 <!-- Sidebar -->
 <aside
-	class="bg-white border-r border-gray-200 flex flex-col h-full transition-all duration-300 overflow-hidden {sidebarOpen
-		? 'w-52 fixed left-0 top-0 z-40 lg:static lg:w-52'
-		: 'w-0 lg:w-16 fixed left-0 lg:static top-0 z-40'}"
+	class={`sidebar fixed top-0 left-0 z-40 h-full bg-white border-r border-gray-100 shadow-sm flex flex-col transition-all duration-300 ease-in-out ${
+		sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+	} lg:static lg:translate-x-0`}
+	class:expanded={sidebarOpen}
+	class:collapsed={!sidebarOpen}
 >
 	<!-- Logo/Brand -->
-	<div
-		class="p-6 lg:p-4 flex items-center gap-2 justify-center lg:justify-start border-b border-gray-200"
-	>
-		<div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center flex-shrink-0">
+	<div class="h-[70px] flex items-center border-b border-gray-100 px-4 gap-2">
+		<a href="/" class="flex items-center gap-2 flex-1 overflow-hidden">
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
-				class="h-5 w-5 text-white"
+				class="h-7 w-7 text-indigo-600"
 				viewBox="0 0 20 20"
 				fill="currentColor"
 			>
@@ -32,195 +32,101 @@
 					d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"
 				/>
 			</svg>
-		</div>
-		<span
-			class="font-bold text-gray-800 hidden"
-			class:hidden={!sidebarOpen}
-			class:block={sidebarOpen}>REDCap</span
-		>
-	</div>
-
-	<!-- User Info Section -->
-	<div class="p-4 border-b border-gray-200 space-y-3" class:hidden={!sidebarOpen}>
-		<div class="flex items-center gap-2">
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				class="h-5 w-5 text-gray-600"
-				fill="none"
-				viewBox="0 0 24 24"
-				stroke="currentColor"
-			>
-				<path
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					stroke-width="2"
-					d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-				/>
-			</svg>
-			<span class="text-sm font-medium text-gray-700">
-				Logged in as {$authStore.user?.fullName || 'User'}<div class="mt-1 inline-block">
-							<span
-								class="px-3 py-1 rounded-full text-sm font-semibold
-								{$authStore?.user?.role === 'SUPERADMIN'
-									? 'bg-red-100 text-red-800'
-									: $authStore?.user?.role === 'ADMIN'
-										? 'bg-orange-100 text-orange-800'
-										: 'bg-blue-100 text-blue-800'}"
-							>
-								{$authStore?.user?.role}
-							</span>
-						</div>
-			</span>
-		</div>
+			<span class="nav-label text-xl font-bold text-gray-800 whitespace-nowrap">MINIBLE</span>
+		</a>
 		<button
-			onclick={handleLogout}
-			class="text-sm text-red-600 hover:text-red-700 font-medium w-full text-left"
+			onclick={onToggleSidebar}
+			class="hidden lg:inline-flex items-center justify-center rounded-lg border border-gray-200 p-2 text-gray-600 hover:bg-gray-50"
+			aria-label="Toggle sidebar width"
 		>
-			Log out
+			<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+			</svg>
 		</button>
 	</div>
 
-	<!-- My Projects Card -->
-	<div
-		class="mx-4 mt-4 mb-4 p-3 bg-gray-50 rounded-lg border border-gray-200"
-		class:hidden={!sidebarOpen}
-	>
-		<div class="flex items-center gap-2 mb-2">
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				class="h-5 w-5 text-gray-600"
-				fill="none"
-				viewBox="0 0 24 24"
-				stroke="currentColor"
-			>
-				<path
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					stroke-width="2"
-					d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V7M3 7l9-4 9 4m0 0l-9 4m9-4v10"
-				/>
-			</svg>
-			<span class="text-sm font-medium text-gray-900">My Projects</span>
-		</div>
-	</div>
-
-	<!-- Contact Promed Alert -->
-	<div
-		class="mx-4 mb-4 p-3 bg-pink-50 rounded-lg border border-pink-200"
-		class:hidden={!sidebarOpen}
-	>
-		<div class="flex items-center gap-2 mb-2">
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				class="h-5 w-5 text-pink-600"
-				fill="none"
-				viewBox="0 0 24 24"
-				stroke="currentColor"
-			>
-				<path
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					stroke-width="2"
-					d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-				/>
-			</svg>
-		</div>
-		<p class="text-sm font-semibold text-pink-700">Contact Promed administrator</p>
-	</div>
-
 	<!-- Navigation Menu -->
-	<nav class="flex-1 px-1 lg:px-3 py-2 overflow-y-auto">
-		<!-- Project Home and Design Section -->
-		<div class="mt-4 mb-3 px-2 lg:px-3 hidden" class:hidden={!sidebarOpen}>
-			<h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">
-				Project Home and Design
-			</h3>
+	<nav class="flex-1 overflow-y-auto py-6">
+		<!-- MENU Section -->
+		<div class="px-6 mb-2">
+			<p class="section-label text-xs font-semibold text-gray-400 uppercase tracking-wider">Menu</p>
 		</div>
-		<ul class="space-y-1">
+		<ul class="px-4 space-y-1">
 			<li>
 				<a
-					href="/project/home"
-					class="flex items-center justify-center lg:justify-start gap-0 lg:gap-3 px-2 lg:px-3 py-2.5 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-					title="Home"
+					href="/"
+					class="nav-item flex items-center justify-between px-3 py-2 rounded-md bg-indigo-50 text-indigo-600"
 				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						class="h-5 w-5 flex-shrink-0"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-						/>
-					</svg>
-					<span class="text-sm hidden" class:hidden={!sidebarOpen}>Home</span>
+					<div class="flex items-center gap-3">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="h-5 w-5"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+							/>
+						</svg>
+						<span class="nav-label text-sm font-medium">Dashboard</span>
+					</div>
+					<span class="nav-extra px-2 py-0.5 text-xs font-semibold text-white bg-indigo-600 rounded-full">01</span>
 				</a>
 			</li>
 			<li>
 				<a
-					href="/project/setup"
-					class="flex items-center justify-center lg:justify-start gap-0 lg:gap-3 px-2 lg:px-3 py-2.5 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-					title="Setup"
+					href="/layouts"
+					class="nav-item flex items-center justify-between px-3 py-2 text-gray-600 rounded-md hover:bg-gray-50"
 				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						class="h-5 w-5 flex-shrink-0"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-						/>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-						/>
-					</svg>
-					<span class="text-sm hidden" class:hidden={!sidebarOpen}>Setup</span>
+					<div class="flex items-center gap-3">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="h-5 w-5"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M4 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-3zM14 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1h-4a1 1 0 01-1-1v-3z"
+							/>
+						</svg>
+						<span class="nav-label text-sm">Layouts</span>
+					</div>
+					<span class="nav-extra">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="h-4 w-4"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+						</svg>
+					</span>
 				</a>
 			</li>
+		</ul>
+
+		<!-- APPS Section -->
+		<div class="px-6 mt-6 mb-2">
+			<p class="section-label text-xs font-semibold text-gray-400 uppercase tracking-wider">Apps</p>
+		</div>
+		<ul class="px-4 space-y-1">
 			<li>
 				<a
-					href="/project/designer"
-					class="flex items-center justify-center lg:justify-start gap-0 lg:gap-3 px-2 lg:px-3 py-2.5 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-					title="Designer"
+					href="/calendar"
+					class="nav-item flex items-center gap-3 px-3 py-2 text-gray-600 rounded-md hover:bg-gray-50"
 				>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
-						class="h-5 w-5 flex-shrink-0"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"
-						/>
-					</svg>
-					<span class="text-sm hidden" class:hidden={!sidebarOpen}>Designer</span>
-				</a>
-			</li>
-			<li>
-				<a
-					href="/project/events"
-					class="flex items-center justify-center lg:justify-start gap-0 lg:gap-3 px-2 lg:px-3 py-2.5 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-					title="Events"
-				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						class="h-5 w-5 flex-shrink-0"
+						class="h-5 w-5"
 						fill="none"
 						viewBox="0 0 24 24"
 						stroke="currentColor"
@@ -232,193 +138,510 @@
 							d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
 						/>
 					</svg>
-					<span class="text-sm hidden" class:hidden={!sidebarOpen}>Events</span>
+					<span class="nav-label text-sm">Calendar</span>
+				</a>
+			</li>
+			<li>
+				<a
+					href="/chat"
+					class="nav-item flex items-center gap-3 px-3 py-2 text-gray-600 rounded-md hover:bg-gray-50"
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						class="h-5 w-5"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+						/>
+					</svg>
+					<span class="nav-label text-sm">Chat</span>
+				</a>
+			</li>
+			<li>
+				<a
+					href="/file-manager"
+					class="nav-item flex items-center gap-3 px-3 py-2 text-gray-600 rounded-md hover:bg-gray-50"
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						class="h-5 w-5"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"
+						/>
+					</svg>
+					<span class="nav-label text-sm">File Manager</span>
+				</a>
+			</li>
+			<li>
+				<a
+					href="/ecommerce"
+					class="nav-item flex items-center justify-between px-3 py-2 text-gray-600 rounded-md hover:bg-gray-50"
+				>
+					<div class="flex items-center gap-3">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="h-5 w-5"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+							/>
+						</svg>
+						<span class="nav-label text-sm">Ecommerce</span>
+					</div>
+					<span class="nav-extra">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="h-4 w-4"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+						</svg>
+					</span>
+				</a>
+			</li>
+			<li>
+				<a
+					href="/email"
+					class="nav-item flex items-center justify-between px-3 py-2 text-gray-600 rounded-md hover:bg-gray-50"
+				>
+					<div class="flex items-center gap-3">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="h-5 w-5"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+							/>
+						</svg>
+						<span class="nav-label text-sm">Email</span>
+					</div>
+					<span class="nav-extra">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="h-4 w-4"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+						</svg>
+					</span>
+				</a>
+			</li>
+			<li>
+				<a
+					href="/invoices"
+					class="nav-item flex items-center justify-between px-3 py-2 text-gray-600 rounded-md hover:bg-gray-50"
+				>
+					<div class="flex items-center gap-3">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="h-5 w-5"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+							/>
+						</svg>
+						<span class="nav-label text-sm">Invoices</span>
+					</div>
+					<span class="nav-extra">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="h-4 w-4"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+						</svg>
+					</span>
+				</a>
+			</li>
+			<li>
+				<a
+					href="/contacts"
+					class="nav-item flex items-center justify-between px-3 py-2 text-gray-600 rounded-md hover:bg-gray-50"
+				>
+					<div class="flex items-center gap-3">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="h-5 w-5"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+							/>
+						</svg>
+						<span class="nav-label text-sm">Contacts</span>
+					</div>
+					<span class="nav-extra">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="h-4 w-4"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+						</svg>
+					</span>
 				</a>
 			</li>
 		</ul>
 
-		<!-- Data Collection Section -->
-		<div class="mt-6 mb-3 px-2 lg:px-3 hidden" class:hidden={!sidebarOpen}>
-			<h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Data Collection</h3>
+		<!-- PAGES Section -->
+		<div class="px-6 mt-6 mb-2">
+			<p class="section-label text-xs font-semibold text-gray-400 uppercase tracking-wider">Pages</p>
 		</div>
-		<ul class="space-y-1">
+		<ul class="px-4 space-y-1">
 			<li>
 				<a
-					href="/project/record-status"
-					class="flex items-center justify-center lg:justify-start gap-0 lg:gap-3 px-2 lg:px-3 py-2.5 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-					title="Record Status Dashboard"
+					href="/authentication"
+					class="nav-item flex items-center justify-between px-3 py-2 text-gray-600 rounded-md hover:bg-gray-50"
 				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						class="h-5 w-5 flex-shrink-0"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-						/>
-					</svg>
-					<span class="text-sm hidden" class:hidden={!sidebarOpen}>Record Status Dashboard</span>
+					<div class="flex items-center gap-3">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="h-5 w-5"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+							/>
+						</svg>
+						<span class="nav-label text-sm">Authentication</span>
+					</div>
+					<span class="nav-extra">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="h-4 w-4"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+						</svg>
+					</span>
 				</a>
 			</li>
 			<li>
 				<a
-					href="/project/add-edit"
-					class="flex items-center justify-center lg:justify-start gap-0 lg:gap-3 px-2 lg:px-3 py-2.5 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-					title="Add / Edit Records"
+					href="/utility"
+					class="nav-item flex items-center justify-between px-3 py-2 text-gray-600 rounded-md hover:bg-gray-50"
 				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						class="h-5 w-5 flex-shrink-0"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-						/>
-					</svg>
-					<span class="text-sm hidden" class:hidden={!sidebarOpen}>Add / Edit Records</span>
+					<div class="flex items-center gap-3">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="h-5 w-5"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+							/>
+						</svg>
+						<span class="nav-label text-sm">Utility</span>
+					</div>
+					<span class="nav-extra">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="h-4 w-4"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+						</svg>
+					</span>
 				</a>
 			</li>
 		</ul>
 
-		<!-- Applications Section -->
-		<div class="mt-6 mb-3 px-2 lg:px-3 hidden" class:hidden={!sidebarOpen}>
-			<h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Applications</h3>
+		<!-- COMPONENTS Section -->
+		<div class="px-6 mt-6 mb-2">
+			<p class="section-label text-xs font-semibold text-gray-400 uppercase tracking-wider">Components</p>
 		</div>
-		<ul class="space-y-1">
+		<ul class="px-4 space-y-1">
 			<li>
 				<a
-					href="/project/dashboards"
-					class="flex items-center justify-center lg:justify-start gap-0 lg:gap-3 px-2 lg:px-3 py-2.5 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-					title="Project Dashboards"
+					href="/ui-elements"
+					class="nav-item flex items-center justify-between px-3 py-2 text-gray-600 rounded-md hover:bg-gray-50"
 				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						class="h-5 w-5 flex-shrink-0"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M9 3v2m6-2v2m-9 4h12m-12 0a2 2 0 00-2 2v6a2 2 0 002 2h12a2 2 0 002-2v-6a2 2 0 00-2-2z"
-						/>
-					</svg>
-					<span class="text-sm hidden" class:hidden={!sidebarOpen}>Project Dashboards</span>
+					<div class="flex items-center gap-3">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="h-5 w-5"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"
+							/>
+						</svg>
+						<span class="nav-label text-sm">UI Elements</span>
+					</div>
+					<span class="nav-extra">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="h-4 w-4"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+						</svg>
+					</span>
 				</a>
 			</li>
 			<li>
 				<a
-					href="/project/alerts"
-					class="flex items-center justify-center lg:justify-start gap-0 lg:gap-3 px-2 lg:px-3 py-2.5 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-					title="Alerts & Notifications"
+					href="/forms"
+					class="nav-item flex items-center justify-between px-3 py-2 text-gray-600 rounded-md hover:bg-gray-50"
 				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						class="h-5 w-5 flex-shrink-0"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-						/>
-					</svg>
-					<span class="text-sm hidden" class:hidden={!sidebarOpen}>Alerts & Notifications</span>
+					<div class="flex items-center gap-3">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="h-5 w-5"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+							/>
+						</svg>
+						<span class="nav-label text-sm">Forms</span>
+					</div>
+					<span class="nav-extra px-2 py-0.5 text-xs font-semibold text-indigo-600 bg-indigo-100 rounded-full">6</span>
 				</a>
 			</li>
 			<li>
 				<a
-					href="/project/data-exports"
-					class="flex items-center justify-center lg:justify-start gap-0 lg:gap-3 px-2 lg:px-3 py-2.5 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-					title="Data Exports"
+					href="/tables"
+					class="nav-item flex items-center justify-between px-3 py-2 text-gray-600 rounded-md hover:bg-gray-50"
 				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						class="h-5 w-5 flex-shrink-0"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-						/>
-					</svg>
-					<span class="text-sm hidden" class:hidden={!sidebarOpen}
-						>Data Exports, Reports, and Stats</span
-					>
+					<div class="flex items-center gap-3">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="h-5 w-5"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+							/>
+						</svg>
+						<span class="nav-label text-sm">Tables</span>
+					</div>
+					<span class="nav-extra">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="h-4 w-4"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+						</svg>
+					</span>
 				</a>
 			</li>
 			<li>
 				<a
-					href="/project/import"
-					class="flex items-center justify-center lg:justify-start gap-0 lg:gap-3 px-2 lg:px-3 py-2.5 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-					title="Data Import Tool"
+					href="/charts"
+					class="nav-item flex items-center justify-between px-3 py-2 text-gray-600 rounded-md hover:bg-gray-50"
 				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						class="h-5 w-5 flex-shrink-0"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"
-						/>
-					</svg>
-					<span class="text-sm hidden" class:hidden={!sidebarOpen}>Data Import Tool</span>
+					<div class="flex items-center gap-3">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="h-5 w-5"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+							/>
+						</svg>
+						<span class="nav-label text-sm">Charts</span>
+					</div>
+					<span class="nav-extra">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="h-4 w-4"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+						</svg>
+					</span>
 				</a>
 			</li>
 			<li>
 				<a
-					href="/project/comparison"
-					class="flex items-center justify-center lg:justify-start gap-0 lg:gap-3 px-2 lg:px-3 py-2.5 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-					title="Data Comparison Tool"
+					href="/icons"
+					class="nav-item flex items-center justify-between px-3 py-2 text-gray-600 rounded-md hover:bg-gray-50"
 				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						class="h-5 w-5 flex-shrink-0"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M9 21H7a2 2 0 01-2-2V9a4 4 0 014-4h5a4 4 0 014 4v10a2 2 0 01-2 2h-2m-4-3h.01M12 17h4"
-						/>
-					</svg>
-					<span class="text-sm hidden" class:hidden={!sidebarOpen}>Data Comparison Tool</span>
+					<div class="flex items-center gap-3">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="h-5 w-5"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+							/>
+						</svg>
+						<span class="nav-label text-sm">Icons</span>
+					</div>
+					<span class="nav-extra">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="h-4 w-4"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+						</svg>
+					</span>
 				</a>
 			</li>
 		</ul>
 	</nav>
+
+	<!-- Logout -->
+	<div class="border-t border-gray-100 p-4">
+		<button
+			onclick={handleLogout}
+			class="w-full flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium text-red-600 rounded-md hover:bg-red-50"
+		>
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				class="h-4 w-4"
+				fill="none"
+				viewBox="0 0 24 24"
+				stroke="currentColor"
+			>
+				<path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					stroke-width="2"
+					d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 11-4 0v-1m0-8V7a2 2 0 114 0v1"
+				/>
+			</svg>
+			<span class="nav-label">Log out</span>
+		</button>
+	</div>
 </aside>
 
 <!-- Mobile Overlay -->
 {#if sidebarOpen}
-	<!-- svelte-ignore a11y_click_events_have_key_events -->
-	<!-- svelte-ignore a11y_no_static_element_interactions -->
-	<div class="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden" onclick={onToggleSidebar}></div>
+	<div class="fixed inset-0 bg-black/40 z-30 lg:hidden" onclick={onToggleSidebar}></div>
 {/if}
+
+
+<style>
+	aside.sidebar {
+		width: 16rem;
+	}
+
+	@media (min-width: 1024px) {
+		aside.sidebar {
+			width: var(--sidebar-width-lg, 16rem);
+		}
+
+		aside.sidebar.collapsed {
+			--sidebar-width-lg: 5rem;
+		}
+
+		aside.sidebar.expanded {
+			--sidebar-width-lg: 16rem;
+		}
+
+		aside.sidebar.collapsed .section-label,
+		aside.sidebar.collapsed .nav-label {
+			display: none;
+		}
+
+		aside.sidebar.collapsed .nav-item {
+			justify-content: center;
+			padding-left: 0.5rem;
+			padding-right: 0.5rem;
+		}
+
+		aside.sidebar.collapsed .nav-item > :first-child {
+			justify-content: center;
+		}
+
+		aside.sidebar.collapsed .nav-extra {
+			display: none;
+		}
+	}
+</style>
