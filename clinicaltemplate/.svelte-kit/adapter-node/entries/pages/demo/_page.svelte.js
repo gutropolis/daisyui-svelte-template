@@ -1,1 +1,0 @@
-import{a,r as e}from"../../../chunks/svelte.js";function o(o,r){o.component(o=>{o.push(`<a${a("href",e("/demo/lucia"))}>lucia</a> <a${a("href",e("/demo/paraglide"))}>paraglide</a>`)})}export{o as default};

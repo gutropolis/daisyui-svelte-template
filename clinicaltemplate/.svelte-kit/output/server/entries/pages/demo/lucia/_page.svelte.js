@@ -1,1 +1,0 @@
-import{c as t}from"../../../../chunks/svelte.js";import"clsx";import"@sveltejs/kit/internal";import"@sveltejs/kit/internal/server";function e(e,o){e.component(e=>{let{data:s}=o;e.push(`<h1>Hi, ${t(s.user.username)}!</h1> <p>Your user ID is ${t(s.user.id)}.</p> <form method="post" action="?/logout"><button>Sign out</button></form>`)})}export{e as default};

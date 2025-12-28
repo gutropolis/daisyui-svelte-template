@@ -1,1 +1,0 @@
-export { default as component } from "../../../../src/routes/(app)/project/[projectId]/setup/user-rights/+page.svelte";
