@@ -1,1 +1,1 @@
-export { default as component } from "../../../../src/routes/(app)/fieldcomment/+page.svelte";
+export { default as component } from "../../../../src/routes/(app)/admin/feature/+page.svelte";

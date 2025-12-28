@@ -1,1 +1,0 @@
-export { default as component } from "../../../../src/routes/(public)/(auth)/2-step-verification/+page.svelte";
