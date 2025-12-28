@@ -12,7 +12,27 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 import os
 from pathlib import Path
+
+import django.utils.translation as translation
+from django.dispatch.dispatcher import Signal
 from decouple import config
+
+# Temporary bridge for third-party packages that still expect the old ugettext helpers
+if not hasattr(translation, 'ugettext'):
+    translation.ugettext = translation.gettext
+if not hasattr(translation, 'ugettext_lazy'):
+    translation.ugettext_lazy = translation.gettext_lazy
+
+# Allow legacy signal constructors that still pass providing_args
+_signal_init = Signal.__init__
+
+
+def _patched_signal_init(self, *args, **kwargs):
+    kwargs.pop('providing_args', None)
+    return _signal_init(self, *args, **kwargs)
+
+
+Signal.__init__ = _patched_signal_init
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -39,11 +59,26 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+    'django_filters',
+    'graphene_django',
+    'graphql_auth',
+    'graphql_jwt.refresh_token.apps.RefreshTokenConfig',
+    'apps.account',
+    'apps.plan',
+    'apps.subscription',
     'apps.project',
     'apps.projectform', 
     'apps.record',
     'apps.compliance',
     'apps.datavalidation',
+]
+
+SITE_ID = 1
+
+AUTHENTICATION_BACKENDS = [
+    'graphql_auth.backends.GraphQLAuthBackend',
+    'django.contrib.auth.backends.ModelBackend',
 ]
 
 MIDDLEWARE = [
@@ -75,7 +110,24 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
+GRAPHENE = {
+    'SCHEMA': 'config.schema.schema',
+    'MIDDLEWARE': [
+        'graphql_jwt.middleware.JSONWebTokenMiddleware'
+    ]
+}
 
+GRAPHQL_AUTH = {
+    'LOGIN_ALLOWED_FIELDS': ['username', 'email'],
+    'ALLOW_LOGIN_NOT_VERIFIED': True,
+    'SEND_ACTIVATION_EMAIL': False,
+    'REGISTER_MUTATION_FIELDS': ['email', 'username', 'password1', 'password2']
+}
+
+GRAPHQL_JWT = {
+    'JWT_VERIFY_EXPIRATION': True,
+    'JWT_LONG_RUNNING_REFRESH_TOKEN': True
+}
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
@@ -109,6 +161,29 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/5.0/howto/static-files/
+
+STATIC_URL = 'static/'
+
+# Default primary key field type
+# https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+TAILWIND_APP_NAME = 'theme'
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
+NPM_BIN_PATH = '/usr/local/bin/npm'
+AUTH_USER_MODEL = "account.User" 
+
+STRIPE_SECRET_KEY = ''
+STRIPE_PUBLISHABLE_KEY = ''
+
+
+# Email server configuration
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
@@ -130,6 +205,16 @@ else:
     EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
     EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_mails')
 
+LOGIN_REDIRECT_URL = 'dashboard'
+LOGIN_URL = 'login'
+LOGOUT_URL = 'logout'
+MEDIA_URL = 'media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+BASE_URL = 'http://127.0.0.1:8000'
+BASE_CLIENT_URL = 'http://localhost:5173'
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
@@ -141,11 +226,4 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/6.0/howto/static-files/
-
-STATIC_URL = 'static/'
-
-
+ 

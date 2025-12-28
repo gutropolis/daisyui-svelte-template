@@ -119,7 +119,7 @@ class ProjectEventForm(models.Model):
 
     class Meta:
         verbose_name = 'ProjectEventForm'
-        verbose_name_plural = 'ProjectForms'
+        verbose_name_plural = 'ProjectEventForms'
         db_table = 'project_event_forms'
         unique_together = (('event', 'form'),)
 
