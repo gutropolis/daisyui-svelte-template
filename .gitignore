@@ -25,3 +25,58 @@ vite.config.ts.timestamp-*
 
 # Paraglide
 src/lib/paraglide
+
+# Python & FastAPI
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+.venv
+ENV/
+env/
+venv/
+ENV.bak/
+env.bak/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# FastAPI & Uvicorn
+*.log
+.cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+alembic/versions/
+
+# IDE
+.vscode/
+.idea/
+*.code-workspace
+

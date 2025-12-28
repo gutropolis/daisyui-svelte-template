@@ -1,0 +1,1 @@
+export { default as component } from "../../../../src/routes/(app)/project/[projectId]/setup/bookmarks/+page.svelte";
