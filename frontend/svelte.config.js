@@ -15,6 +15,11 @@ const config = {
 		// Set the base path for subdirectory deployment
 		paths: {
 			base: process.env.NODE_ENV === 'production' ? '/demo/cdms' : ''
+		},
+		alias: {
+			"$lib": "src/lib",
+			"$theme": "src/theme",
+			"$static": "./static"
 		}
 	},
 	extensions: ['.svelte', '.svx']

@@ -1,9 +1,20 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+	import { PATH } from '$lib/enums/path'; 
+	import { authUser } from '$lib/stores/app'; 
+	import { onMount } from 'svelte';
 	import favicon from '$lib/assets/favicon.svg';
 	import { navigating } from '$app/state';
-	import Progress from '$lib/components/common/Progress.svelte';
+	import Progress from '$theme/common/Progress.svelte';
 
 	let { children } = $props();
+
+	onMount(() => {
+		console.log("AUTH USER LOGIN",$authUser);
+		if ($authUser) { 
+			goto(PATH.MY_PROFILE);
+		}
+	});
 </script>
 
 <svelte:head>

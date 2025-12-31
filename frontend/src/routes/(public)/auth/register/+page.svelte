@@ -1,7 +1,32 @@
+<!-- LoginForm.svelte -->
 <script lang="ts">
-	import { register } from '$lib/auth';
+  import { writable } from 'svelte/store';
+  import { onMount } from "svelte";
+  import { createEventDispatcher } from "svelte";
+  import { getContextClient } from "@urql/svelte";
+  import type { User } from "$lib/modal/User";
+  import alerts from "$lib/stores/alerts"; 
+ 	import { PATH } from '$lib/enums/path';
+	import { handleGqlErr } from '$lib/utils/gqlfx';
+  import { RegisterUser } from "$lib/gql/user";
 
-	let { form } = $props();
+
+	let user: User = {
+		email: '',
+		country: 'US',
+		firstName: '',
+		lastName: '',
+		contact_number: '',
+		company: '',
+		password: '',
+		password2: ''
+	};
+	let title = '';
+	let busy = false;
+	let valid = false;
+
+	const dispatch = createEventDispatcher();
+	const client = getContextClient();
 
 	let showPassword = $state(false);
 	let showConfirmPassword = $state(false);
@@ -9,11 +34,18 @@
 	let loading = $state(false);
 	let error = $state<string | null>(null);
 	let success = $state(false);
-	let contactNumber = $state('');
-	let fullName = $state('');
-	let email = $state('');
-	let password = $state('');
-	let confirmPassword = $state('');
+
+	function formatRegisterErrors(errors: Record<string, any> | undefined) {
+		if (!errors) return 'Registration failed. Please check your details and try again.';
+		return Object.entries(errors)
+			.map(([field, messages]) => {
+				const parts = Array.isArray(messages)
+					? messages.map((m) => (typeof m === 'string' ? m : m?.message || JSON.stringify(m)))
+					: [String(messages)];
+				return `${field}: ${parts.join(', ')}`;
+			})
+			.join('; ');
+	}
 
 	function togglePasswordVisibility() {
 		showPassword = !showPassword;
@@ -29,17 +61,17 @@
 		success = false;
 
 		// Validation
-		if (!email || !password || !fullName) {
+		if (!user.email || !user.password || !user.password2 || !user.firstName) {
 			error = 'Please fill in all required fields';
 			return;
 		}
 
-		if (password !== confirmPassword) {
+		if (user.password !== user.password2) {
 			error = 'Passwords do not match';
 			return;
 		}
 
-		if (password.length < 8) {
+		if (user.password.length < 8) {
 			error = 'Password must be at least 8 characters';
 			return;
 		}
@@ -50,25 +82,50 @@
 		}
 
 		loading = true;
+const regUserInput = {
+			email: user.email,
+			password: user.password,
+			password2: user.password2,
+			firstName: user.firstName,
+			lastName: user.lastName,
+			contact_number: user.contact_number,
+			country: user.country,
+			company: user.company
+		};
+		console.log("contact information", { input: regUserInput });
+		const res = await client
+			.mutation(RegisterUser, {
+				email: user.email,
+				password1: user.password,
+				password2: user.password2,
+				firstName: user.firstName,
+				lastName: user.lastName,
+				contactNumber: user.contact_number,
+				company: user.company
+			})
+			.toPromise();
+ 
+    console.log("RES", res);
+    loading = false;
 
-		try {
-			const result = await register(email, password, fullName, contactNumber || undefined);
+    console.log("ERROR", res.error);
+    if (res.error) {
+      let errMsg = handleGqlErr(res.error);
+      alerts.error(title, errMsg);
+      return false;
+    }
 
-			if (result.success) {
-				success = true;
-				error = null;
-				// Redirect to dashboard after 2 seconds
-				setTimeout(() => {
-					window.location.href = '/dashboard';
-				}, 2000);
-			} else {
-				error = result.message || 'Registration failed. Please try again.';
-			}
-		} catch (err) {
-			error = err instanceof Error ? err.message : 'An unexpected error occurred';
-		} finally {
-			loading = false;
+    let result = res.data.register; 
+		if (result.success) {
+			alerts.success(title || 'Registration', result.message || 'Account created successfully');
+			console.log("token",result.token,"refreshToken",result.refreshToken,"message",result.message )
+			return;
 		}
+
+		const formattedErrors = formatRegisterErrors(result.errors);
+		error = formattedErrors;
+		alerts.error(title || 'Registration failed', formattedErrors);
+	 
 	}
 </script>
 
@@ -97,36 +154,34 @@
 			</div>
 		{/if}
 
-		{#if form?.missing}
-			<div class="alert alert-error alert-sm">
-				<span>Please fill in all required fields</span>
-			</div>
-		{/if}
-		{#if form?.exists}
-			<div class="alert alert-error alert-sm">
-				<span>Email already registered</span>
-			</div>
-		{/if}
-		{#if form?.mismatch}
-			<div class="alert alert-error alert-sm">
-				<span>Passwords do not match</span>
-			</div>
-		{/if}
-
 		<!-- Registration Form -->
 		<form onsubmit={handleRegister} class="space-y-4">
 			<!-- Full Name Input -->
 			<div class="form-control">
-				<label class="label" for="fullname">
-					<span class="label-text text-gray-700">Full Name <span class="text-red-500">*</span></span>
+				<label class="label" for="firstname">
+					<span class="label-text text-gray-700">First Name <span class="text-red-500">*</span></span>
 				</label>
 				<input
-					id="fullname"
+					id="firstname"
 					type="text"
-					placeholder="Enter your full name"
+					placeholder="Enter your first name"
 					class="input input-bordered w-full focus:outline-none focus:border-primary"
-					bind:value={fullName}
+					bind:value={user.firstName}
 					required
+					disabled={loading}
+				/>
+			</div>
+
+			<div class="form-control">
+				<label class="label" for="lastname">
+					<span class="label-text text-gray-700">Last Name</span>
+				</label>
+				<input
+					id="lastname"
+					type="text"
+					placeholder="Enter your last name"
+					class="input input-bordered w-full focus:outline-none focus:border-primary"
+					bind:value={user.lastName}
 					disabled={loading}
 				/>
 			</div>
@@ -141,7 +196,7 @@
 					type="email"
 					placeholder="Enter your email"
 					class="input input-bordered w-full focus:outline-none focus:border-primary"
-					bind:value={email}
+					bind:value={user.email}
 					required
 					disabled={loading}
 				/>
@@ -157,7 +212,7 @@
 					type="tel"
 					placeholder="Enter your contact number (optional)"
 					class="input input-bordered w-full focus:outline-none focus:border-primary"
-					bind:value={contactNumber}
+					bind:value={user.contact_number}
 					disabled={loading}
 				/>
 			</div>
@@ -173,7 +228,7 @@
 						type={showPassword ? 'text' : 'password'}
 						placeholder="••••••••"
 						class="input input-bordered w-full focus:outline-none focus:border-primary"
-						bind:value={password}
+						bind:value={user.password}
 						required
 						disabled={loading}
 					/>
@@ -224,7 +279,7 @@
 						type={showConfirmPassword ? 'text' : 'password'}
 						placeholder="••••••••"
 						class="input input-bordered w-full focus:outline-none focus:border-primary"
-						bind:value={confirmPassword}
+						bind:value={user.password2}
 						required
 						disabled={loading}
 					/>
@@ -301,7 +356,7 @@
 		<div class="text-center">
 			<p class="text-sm text-gray-600">
 				Already have an account?
-				<a href="/auth/login" class="link link-primary font-medium">Sign in</a>
+				<a href="{PATH.LOGIN}" class="link link-primary font-medium">Sign in</a>
 			</p>
 		</div>
 

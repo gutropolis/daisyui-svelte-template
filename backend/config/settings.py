@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    'corsheaders',
     'django_filters',
     'graphene_django',
     'graphql_auth',
@@ -83,6 +84,7 @@ AUTHENTICATION_BACKENDS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -118,10 +120,10 @@ GRAPHENE = {
 }
 
 GRAPHQL_AUTH = {
-    'LOGIN_ALLOWED_FIELDS': ['username', 'email'],
+    'LOGIN_ALLOWED_FIELDS': ['email'],
     'ALLOW_LOGIN_NOT_VERIFIED': True,
     'SEND_ACTIVATION_EMAIL': False,
-    'REGISTER_MUTATION_FIELDS': ['email', 'username', 'password1', 'password2']
+    'REGISTER_MUTATION_FIELDS': ['email', 'password1', 'password2']
 }
 
 GRAPHQL_JWT = {
@@ -133,12 +135,8 @@ GRAPHQL_JWT = {
 
 DATABASES = {
     'default': {
-        'ENGINE'  : 'django.db.backends.mysql', # <-- UPDATED line
-        'NAME'    : '2026_trial_django',                 # <-- UPDATED line
-        'USER'    : 'root',                     # <-- UPDATED line
-        'PASSWORD': 'root',                     # <-- UPDATED line
-        'HOST'    : 'localhost',                # <-- UPDATED line
-        'PORT'    : '3306',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
@@ -214,7 +212,15 @@ BASE_URL = 'http://127.0.0.1:8000'
 BASE_CLIENT_URL = 'http://localhost:5173'
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
+# CORS settings
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:5174",
+    "http://127.0.0.1:5174",
+]
 
+CORS_ALLOW_CREDENTIALS = True
 
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/

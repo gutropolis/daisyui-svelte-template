@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import '../layout.css';
-	import Sidebar from '$lib/components/common/Sidebar.svelte';
+	import Sidebar from '$theme/common/Sidebar.svelte';
 
 	let sidebarOpen = $state(true);
 	let isMobile = $state(false);
