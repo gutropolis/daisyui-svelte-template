@@ -15,8 +15,7 @@ export const ssr = true;
 export const trailingSlash = 'always'
 
 
-import { browser } from '$app/environment';
-import { goto } from '$app/navigation';
+import { browser } from '$app/environment'; 
 import client from '$lib/gql/client';
 import { QryMe } from '$lib/gql/user';
  

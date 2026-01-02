@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { PATH } from '$lib/enums/path'; 
 	import { authUser } from '$lib/stores/app'; 
+	import {  storeProjID } from '$lib/stores/app';
 	import { onMount } from 'svelte';
 	import favicon from '$lib/assets/favicon.svg';
 	import { navigating } from '$app/state';
@@ -13,8 +14,19 @@
 		console.log("AUTH USER LOGIN",$authUser);
 		if ($authUser) { 
 			goto(PATH.MY_PROFILE);
+			return;
 		}
+		goto(PATH.LOGIN);
+		return;
 	});
+
+ 
+    $effect(() => {
+        if (!$authUser) {
+			console.log("App Auth User:", $authUser);
+			goto(PATH.LOGIN);
+		}
+    });
 </script>
 
 <svelte:head>

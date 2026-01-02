@@ -1,8 +1,7 @@
 <!-- LoginForm.svelte -->
 <script lang="ts">
   import { writable } from 'svelte/store';
-  import { onMount } from "svelte";
-  import { createEventDispatcher } from "svelte";
+  import { onMount } from "svelte"; 
   import { getContextClient } from "@urql/svelte";
   import type { User } from "$lib/modal/User";
   import alerts from "$lib/stores/alerts"; 
@@ -17,15 +16,14 @@
 		firstName: '',
 		lastName: '',
 		contact_number: '',
-		company: '',
+		 
 		password: '',
 		password2: ''
 	};
 	let title = '';
 	let busy = false;
 	let valid = false;
-
-	const dispatch = createEventDispatcher();
+ 
 	const client = getContextClient();
 
 	let showPassword = $state(false);
@@ -89,8 +87,7 @@ const regUserInput = {
 			firstName: user.firstName,
 			lastName: user.lastName,
 			contact_number: user.contact_number,
-			country: user.country,
-			company: user.company
+			country: user.country, 
 		};
 		console.log("contact information", { input: regUserInput });
 		const res = await client
@@ -100,8 +97,8 @@ const regUserInput = {
 				password2: user.password2,
 				firstName: user.firstName,
 				lastName: user.lastName,
-				contactNumber: user.contact_number,
-				company: user.company
+				contactNumber: user.contact_number 
+				 
 			})
 			.toPromise();
  
@@ -117,6 +114,7 @@ const regUserInput = {
 
     let result = res.data.register; 
 		if (result.success) {
+			success = true;
 			alerts.success(title || 'Registration', result.message || 'Account created successfully');
 			console.log("token",result.token,"refreshToken",result.refreshToken,"message",result.message )
 			return;

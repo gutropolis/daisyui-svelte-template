@@ -1,54 +1,69 @@
-<script lang="ts">
-	import { login } from '$lib/auth';
-	import { goto } from '$app/navigation';
+<!-- LoginForm.svelte -->
+<script lang="ts"> 
+  import { goto } from "$app/navigation";
+  import { createEventDispatcher } from "svelte";
+  import { getContextClient } from "@urql/svelte";
+  import {  setTokens, clearTokens } from '$lib/stores/authStore'; 
+	import Input from '$theme/components/form/Input.svelte';
+  import { writable } from 'svelte/store';
+	import { handleGqlErr } from "$lib/utils/gqlfx";
+	import alerts from "$lib/stores/alerts";
+  import { LoginUser, RegisterUser } from "$lib/gql/user";
+  import { PATH } from '$lib/enums/path';
+  import { authUser } from '$lib/stores/app';
+  import graph   from "$theme/images/graph.png";
 
-	let showPassword = $state(false);
-	let loading = $state(false);
-	let error = $state<string | null>(null);
-	let email = $state('');
-	let password = $state('');
+  let loading = false;
+  let error = "";
+  let valid = false;
+  let showPassword = writable(false); 
+  const client = getContextClient();
+  let email="";
+  let password="";
+  
+  function togglePasswordVisibility() {
+    showPassword.update(v => !v);
+  }
+  
+  async function handleSubmit() {
+    //Add Code for graphql
 
-	function togglePasswordVisibility() {
-		showPassword = !showPassword;
-	}
+    let title = "Login Member";
+    if (loading) return;
+    loading = true;
+   
+    const res = await client
+      .mutation(LoginUser, {  
+        email: email,
+        password: password,  
+      })
+      .toPromise();
+ 
+    console.log("RES", res);
+    loading = false;
 
-	async function handleLogin(e: SubmitEvent) {
-		e.preventDefault();
-		error = null;
+    console.log("ERROR", res.error);
+    if (res.error) {
+      let errMsg = handleGqlErr(res.error);
+	  error=errMsg;
+      alerts.error(title, errMsg);
+      return false;
+    }
 
-		// Validation
-		if (!email || !password) {
-			error = 'Please enter both email and password';
-			return;
-		}
-
-		loading = true;
-
-		try {
-			console.log('📝 Form submitted with:', { email });
-			const result = await login(email, password);
-			console.log('📤 Login result:', result);
-
-			if (result.success) {
-				console.log('✅ Login successful, redirecting...');
-				// Redirect to dashboard after successful login
-				setTimeout(() => {
-					goto('/dashboard');
-				}, 500);
-			} else {
-				error = result.message || 'Login failed. Please try again.';
-				console.log('❌ Login failed:', error);
-			}
-		} catch (err) {
-			const errorMsg = err instanceof Error ? err.message : 'An unexpected error occurred';
-			error = errorMsg;
-			console.error('💥 Exception during login:', err);
-		} finally {
-			loading = false;
-		}
-	}
+    let result = res.data.tokenAuth;
+ 
+    if (result) {
+      alerts.success(title,"Login Successfully!!"); 
+      setTokens(result.token, result.refreshToken);
+      authUser.set(result?.user);
+      goto(PATH.MY_PROFILE);
+      
+      console.log("token",result.token,"refreshToken", result.refreshToken,   )
+      return;
+    }
+    //End Graphql
+  } 
 </script>
-
 <div class="card bg-white shadow-lg">
 	<div class="card-body space-y-6">
 		<!-- Logo and Title -->
@@ -68,7 +83,7 @@
 		{/if}
 
 		<!-- Login Form -->
-		<form onsubmit={handleLogin} class="space-y-4">
+		<form onsubmit={handleSubmit} class="space-y-4">
 			<!-- Email Input -->
 			<div class="form-control">
 				<label class="label" for="email">
@@ -93,7 +108,7 @@
 				<div class="relative">
 					<input
 						id="password"
-						type={showPassword ? 'text' : 'password'}
+						type={$showPassword ? 'text' : 'password'}
 						bind:value={password}
 						placeholder="••••••••"
 						class="input input-bordered w-full focus:outline-none focus:border-primary"
@@ -106,7 +121,7 @@
 						class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
 						tabindex="-1"
 					>
-						{#if showPassword}
+						{#if $showPassword}
 							<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path
 									stroke-linecap="round"

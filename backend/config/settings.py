@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     'graphene_django',
     'graphql_auth',
     'graphql_jwt.refresh_token.apps.RefreshTokenConfig',
+    'apps.user',
     'apps.account',
     'apps.plan',
     'apps.subscription',
@@ -83,8 +84,8 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -123,20 +124,31 @@ GRAPHQL_AUTH = {
     'LOGIN_ALLOWED_FIELDS': ['email'],
     'ALLOW_LOGIN_NOT_VERIFIED': True,
     'SEND_ACTIVATION_EMAIL': False,
-    'REGISTER_MUTATION_FIELDS': ['email', 'password1', 'password2']
+    'REGISTER_MUTATION_FIELDS': ['email', 'contact_number','first_name', 'last_name',  'password1', 'password2']
 }
 
 GRAPHQL_JWT = {
     'JWT_VERIFY_EXPIRATION': True,
     'JWT_LONG_RUNNING_REFRESH_TOKEN': True
 }
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+]
+
+CORS_ALLOW_CREDENTIALS = True
+
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE'  : 'django.db.backends.mysql', # <-- UPDATED line
+        'NAME'    : '2026_trial_django',                 # <-- UPDATED line
+        'USER'    : 'root',                     # <-- UPDATED line
+        'PASSWORD': 'root',                     # <-- UPDATED line
+        'HOST'    : 'localhost',                # <-- UPDATED line
+        'PORT'    : '3306',
     }
 }
 
@@ -174,7 +186,7 @@ INTERNAL_IPS = [
     "127.0.0.1",
 ]
 NPM_BIN_PATH = '/usr/local/bin/npm'
-AUTH_USER_MODEL = "account.User" 
+AUTH_USER_MODEL = "user.User" 
 
 STRIPE_SECRET_KEY = ''
 STRIPE_PUBLISHABLE_KEY = ''
@@ -212,15 +224,7 @@ BASE_URL = 'http://127.0.0.1:8000'
 BASE_CLIENT_URL = 'http://localhost:5173'
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-# CORS settings
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-    "http://localhost:5174",
-    "http://127.0.0.1:5174",
-]
 
-CORS_ALLOW_CREDENTIALS = True
 
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/

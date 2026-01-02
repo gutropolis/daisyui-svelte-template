@@ -5,7 +5,7 @@ from .types import UserType
 
 class UserMutation(graphene.ObjectType):
     # Authentication mutations
-    register = auth_mutations.Register.Field()
+    register = auth_mutations.Register.Field() 
     verify_account = auth_mutations.VerifyAccount.Field()
     resend_activation_email = auth_mutations.ResendActivationEmail.Field()
     send_password_reset_email = auth_mutations.SendPasswordResetEmail.Field()
