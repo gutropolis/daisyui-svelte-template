@@ -12,7 +12,7 @@ export const app_prod_client_url="https://www.sheetpilesoft.com/app";
 export const app_dev_client_url= "http://localhost:5173";
 
 // Dynamically set SERVER_PATH based on buildTarget
-export const SERVER_PATH = "http://127.0.0.1:8000" ;
+export const SERVER_PATH = "http://localhost:8000" ;
 //export const SERVER_PATH = "https://www.sheetpilesoft.com/backend";
 export const RESUME_PATH = SERVER_PATH + "/uploads";
 export const BASE_CLIENT_PATH = "http://localhost:5173";
@@ -25,10 +25,10 @@ const BASE_SUB_DIR = ""; // Example : public/website
 
 export enum PATH {
   HOME = SERVER_PATH + "/",
-  LOGIN = BASE_CLIENT_PATH + "/login",
-  REGISTER = BASE_CLIENT_PATH + "/register",
-  FORGET_PASSWORD = BASE_CLIENT_PATH + "/forget-password",
-  LOGOUT = BASE_CLIENT_PATH + "/logout",
+  LOGIN = BASE_CLIENT_PATH + "/auth/login",
+  REGISTER = BASE_CLIENT_PATH + "/auth/register",
+  FORGET_PASSWORD = BASE_CLIENT_PATH + "/auth/forget-password",
+  LOGOUT = BASE_CLIENT_PATH + "/auth/logout",
   MY_PROFILE = BASE_CLIENT_PATH +"/user/profile",
 
   My_PROJECTS=BASE_CLIENT_PATH +"/project/all",

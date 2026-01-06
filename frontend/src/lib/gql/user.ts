@@ -8,13 +8,9 @@ query Me {
             id
             firstName
             lastName
-            slug
-            email
-            company
-            contactNumber
+            email 
             role
-            
-            
+            fullName
             __typename      
         
         }
@@ -100,12 +96,12 @@ export const RegisterUser= gql`
         success
         errors
         user{
-        id
-        firstName
-        lastName
-        email
-        contactNumber
-        role
+            id
+            firstName
+            lastName 
+            email
+            contactNumber
+            role
         }
         refreshToken 
         __typename
@@ -122,8 +118,7 @@ mutation RefreshToken(
     refreshToken(   
         refreshToken: $refreshToken 
  ){ 
-       payload
-       refreshExpiresIn
+       payload 
        token
        refreshToken
     }

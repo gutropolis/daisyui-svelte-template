@@ -93,6 +93,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def get_email(self):
         return self.email
+    
 
     def __str__(self):
         return self.email

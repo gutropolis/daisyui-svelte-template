@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { PROJECT_DETAIL_DASHBOARD_ROUTE, PROJECT_DETAIL_SETUP_ROUTE, PROJECT_NEW_ROUTE } from '$lib/enums/routes';
+	import { getStatusColor } from '$lib/utils/projecthelper';
 	import { onMount } from 'svelte';
 
 	interface Project {
@@ -21,18 +22,7 @@
 		];
 	});
 
-	const getStatusColor = (status: string) => {
-		switch (status) {
-			case 'Draft':
-				return 'badge-warning';
-			case 'Staging':
-				return 'badge-info';
-			case 'Production':
-				return 'badge-success';
-			default:
-				return 'badge-gray';
-		}
-	};
+	 
 </script>
 
 <div class="p-6 space-y-6">

@@ -4,8 +4,8 @@
  */
 
 import { derived, writable } from 'svelte/store';
-import type {User} from '$lib/models/User';
-import type Entity from '$lib/models/Entity';
+import type {User} from '$lib/modal/User';
+import type Entity from '$lib/modal/Entity';
 import { PATH } from '$lib/enums/path';
 import { ROLE } from '$lib/enums/role';
 

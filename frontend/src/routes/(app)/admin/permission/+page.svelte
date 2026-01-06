@@ -1,12 +1,17 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { graphqlClient } from '$lib/graphql/client';
-	import type { PermissionType } from '$lib/modal/user';
+	 
+	import type { PermissionType } from '$lib/modal/User';
 	import PermissionForm from './PermissionForm.svelte';
 	import PermissionList from './PermissionList.svelte';
 	import PaginationModal from './PaginationModal.svelte';
 	import FilterModal from './FilterModal.svelte';
+	import { CREATE_PERMISSION_MUTATION, DELETE_PERMISSION_MUTATION, PERMISSIONS_QUERY, PLAN_FEATURES_QUERY, UPDATE_PERMISSION_MUTATION } from '$lib/gql/plan';
+	import alerts from '$lib/stores/alerts';
+	import { getContextClient } from '@urql/svelte';
+	import { handleGqlErr } from '$lib/utils/gqlfx';
 
+	const client = getContextClient();
 	// State
 	let permissions: PermissionType[] = [];
 	let features: Array<{ id: number; name: string }> = [];
@@ -38,93 +43,7 @@
 		featureId: ''
 	};
 
-	// GraphQL Queries
-	const PERMISSIONS_QUERY = `
-		query GetPermissions($page: Int, $limit: Int, $filterInput: FilterPermissionsInput) {
-			permissions(page: $page, limit: $limit, filterInput: $filterInput) {
-				success
-				message
-				data {
-					id
-					keyName
-					name
-					description
-					icon
-					featureId
-					createdAt
-					updatedAt
-				}
-				pagination {
-					page
-					limit
-					total
-					totalPages
-					hasNext
-					hasPrev
-				}
-			}
-		}
-	`;
-
-	const PLAN_FEATURES_QUERY = `
-		query {
-			planFeatures {
-				success
-				message
-				data {
-					id
-					name
-				}
-			}
-		}
-	`;
-
-	const CREATE_PERMISSION_MUTATION = `
-		mutation CreatePermission($input: CreatePermissionInput!) {
-			createPermission(input: $input) {
-				success
-				message
-				data {
-					id
-					keyName
-					name
-					description
-					icon
-					featureId
-					createdAt
-					updatedAt
-				}
-			}
-		}
-	`;
-
-	const UPDATE_PERMISSION_MUTATION = `
-		mutation UpdatePermission($id: Int!, $input: UpdatePermissionInput!) {
-			updatePermission(id: $id, input: $input) {
-				success
-				message
-				data {
-					id
-					keyName
-					name
-					description
-					icon
-					featureId
-					createdAt
-					updatedAt
-				}
-			}
-		}
-	`;
-
-	const DELETE_PERMISSION_MUTATION = `
-		mutation DeletePermission($id: Int!) {
-			deletePermission(id: $id) {
-				success
-				message
-			}
-		}
-	`;
+	
 
 	// Load permissions and features on mount
 	onMount(async () => {
@@ -134,18 +53,28 @@
 
 	// Load features
 	async function loadFeatures() {
-		try {
-			const response = await graphqlClient.request(PLAN_FEATURES_QUERY);
-			if (response.planFeatures.success) {
-				features = response.planFeatures.data;
+		loading = true;
+	 		let title = "Features";
+			const res = await client.query(PLAN_FEATURES_QUERY, {}).toPromise();
+			 
+          
+			if (res.error) {
+				alerts.error(title, res.error.message);
+				return;
 			}
-		} catch (err: any) {
-			console.error('Failed to load features:', err);
-		}
+			let planFeature = res?.data?.planFeatures;
+            console.log("Plan ",planFeature);
+			 
+			if (planFeature.success) {
+				features = planFeature.data;
+			}
+		loading = false;
+		 
 	}
 
 	// Load permissions
 	async function loadPermissions() {
+		let title = "Permissions";
 		loading = true;
 		error = '';
 		try {
@@ -157,21 +86,35 @@
 				filterInput.search = searchTerm;
 			}
 
+			const res = await client.query(PERMISSIONS_QUERY, {
+				page: currentPage,
+				limit: 10,
+				filterInput: Object.keys(filterInput).length > 0 ? filterInput : null
+			}).toPromise();
+			 
+          
+			if (res.error) {
+				alerts.error(title, res.error.message);
+				return;
+			}
+
 			const response = await graphqlClient.request(PERMISSIONS_QUERY, {
 				page: currentPage,
 				limit: 10,
 				filterInput: Object.keys(filterInput).length > 0 ? filterInput : null
 			});
 
-			if (response.permissions.success) {
-				permissions = response.permissions.data;
-				const pagination = response.permissions.pagination;
+			let permission =response.permissions;
+
+			if (permission.success) {
+				permissions = permission.data;
+				const pagination = permission.pagination;
 				totalPages = pagination.totalPages;
 				total = pagination.total;
 				hasNext = pagination.hasNext;
 				hasPrev = pagination.hasPrev;
 			} else {
-				error = response.permissions.message;
+				error = permission.message;
 			}
 		} catch (err: any) {
 			error = `Failed to load permissions: ${err.message}`;
@@ -191,9 +134,16 @@
 		loading = true;
 		error = '';
 		success = '';
+	    const title="Add Permission";
+		
+
+        
 
 		try {
-			const response = await graphqlClient.request(CREATE_PERMISSION_MUTATION, {
+		
+        // Save the Connector
+        const response = await client
+            .mutation(CREATE_PERMISSION_MUTATION, {
 				input: {
 					keyName: formData.keyName,
 					name: formData.name,
@@ -201,19 +151,30 @@
 					description: formData.description || null,
 					icon: formData.icon || null
 				}
-			});
+			})
+            .toPromise();
 
-			if (response.createPermission.success) {
+        
+        if (response.error) {
+            const errMsg = handleGqlErr(response.error);
+            alerts.error(title, errMsg);
+            return "";
+        }
+        let permisson =response.data?.createPermission;
+			if (permisson.success) {
+				 
+                alerts.success(title,"Permission created successfully!");  
 				success = 'Permission created successfully!';
 				await loadPermissions();
 				resetForm();
 				setTimeout(() => (success = ''), 3000);
 			} else {
-				error = response.createPermission.message;
+				error = permisson.message;
 			}
 		} catch (err: any) {
 			error = `Failed to create permission: ${err.message}`;
 			console.error(err);
+			 alerts.error(title, err);
 		} finally {
 			loading = false;
 		}
@@ -229,28 +190,32 @@
 		loading = true;
 		error = '';
 		success = '';
-
+        const title="Update Permission";
 		try {
-			const response = await graphqlClient.request(UPDATE_PERMISSION_MUTATION, {
+ 
+			const response = await client.mutation(UPDATE_PERMISSION_MUTATION, {
 				id: editingId,
 				input: {
 					name: formData.name,
 					description: formData.description || null,
 					icon: formData.icon || null
 				}
-			});
+			}).toPromise();
 
-			if (response.updatePermission.success) {
+			if (response.data.updatePermission.success) {
 				success = 'Permission updated successfully!';
 				await loadPermissions();
 				resetForm();
 				setTimeout(() => (success = ''), 3000);
+				alerts.success(title,success);  
 			} else {
-				error = response.updatePermission.message;
+				error = response.data.updatePermission.message;
 			}
 		} catch (err: any) {
 			error = `Failed to update permission: ${err.message}`;
 			console.error(err);
+			alerts.error(title, err);
+			
 		} finally {
 			loading = false;
 		}
@@ -261,22 +226,24 @@
 		loading = true;
 		error = '';
 		success = '';
-
+         const title="Delete Permission";
 		try {
-			const response = await graphqlClient.request(DELETE_PERMISSION_MUTATION, {
+			const response = await client.mutation(DELETE_PERMISSION_MUTATION, {
 				id
 			});
 
-			if (response.deletePermission.success) {
+			if (response.data.deletePermission.success) {
 				success = 'Permission deleted successfully!';
 				await loadPermissions();
 				setTimeout(() => (success = ''), 3000);
+				alerts.success(title,success);  
 			} else {
-				error = response.deletePermission.message;
+				error = response.data.deletePermission.message;
 			}
 		} catch (err: any) {
 			error = `Failed to delete permission: ${err.message}`;
 			console.error(err);
+			alerts.error(title, err);
 		} finally {
 			loading = false;
 		}

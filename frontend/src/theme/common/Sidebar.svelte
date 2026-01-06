@@ -1,5 +1,4 @@
-<script lang="ts">
-	import type { ContactAction, MenuSection, QuickLink } from '$lib/types/navigation';
+<script lang="ts">	import type { ContactAction, MenuSection, QuickLink } from '$lib/types/navigation';
 	import {
 		APPS_ALERTS_ROUTE,
 		APPS_API_ROUTE,
@@ -48,6 +47,7 @@
 		SETUP_DESIGN_INSTRUMENTS_ROUTE,
 		SUPPORT_CONTACT_ROUTE
 	} from '$lib/enums/routes';
+
 
 	const { sidebarOpen } = $props<{ sidebarOpen: boolean }>();
 

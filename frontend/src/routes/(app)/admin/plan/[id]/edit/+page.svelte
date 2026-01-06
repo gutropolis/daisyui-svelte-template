@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto, page } from '$app/navigation';
+	import { GET_PLAN_QUERY, PLAN_FEATURES_QUERY, UPDATE_PLAN_MUTATION } from '$lib/gql/plan';
 	import { graphqlClient } from '$lib/graphql/client';
 	import { onMount } from 'svelte';
 
@@ -12,62 +13,8 @@
 
 	const planId = parseInt($page.params.id);
 
-	const GET_PLAN_QUERY = `
-		query GetPlan($id: Int!) {
-			plan(id: $id) {
-				success
-				message
-				data {
-					id
-					slug
-					name
-					price
-					durationDays
-					maxUsers
-					maxStudies
-					maxStorageGb
-					features
-					createdAt
-					updatedAt
-				}
-			}
-		}
-	`;
-
-	const PLAN_FEATURES_QUERY = `
-		query {
-			planFeatures {
-				success
-				message
-				data {
-					id
-					name
-				}
-			}
-		}
-	`;
-
-	const UPDATE_PLAN_MUTATION = `
-		mutation UpdatePlan($id: Int!, $input: UpdatePlanInput!) {
-			updatePlan(id: $id, input: $input) {
-				success
-				message
-				data {
-					id
-					slug
-					name
-					price
-					durationDays
-					maxUsers
-					maxStudies
-					maxStorageGb
-					features
-					createdAt
-					updatedAt
-				}
-			}
-		}
-	`;
+	 
+	
 
 	let formData = {
 		name: '',

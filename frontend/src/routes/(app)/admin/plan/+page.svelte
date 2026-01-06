@@ -4,6 +4,7 @@
 	import PlanCard from './PlanCard.svelte';
 	import FilterModal from './FilterModal.svelte';
 	import PaginationModal from './PaginationModal.svelte';
+	import { DELETE_PLAN_MUTATION, PLANS_QUERY } from '$lib/gql/plan';
 
 	interface Plan {
 		id: number;
@@ -37,45 +38,7 @@
 	// Filter state
 	let searchTerm = '';
 
-	// GraphQL Queries
-	const PLANS_QUERY = `
-		query GetPlans($page: Int, $limit: Int, $filterInput: FilterPlansInput) {
-			plans(page: $page, limit: $limit, filterInput: $filterInput) {
-				success
-				message
-				data {
-					id
-					slug
-					name
-					price
-					durationDays
-					maxUsers
-					maxStudies
-					maxStorageGb
-					features
-					createdAt
-					updatedAt
-				}
-				pagination {
-					page
-					limit
-					total
-					totalPages
-					hasNext
-					hasPrev
-				}
-			}
-		}
-	`;
-
-	const DELETE_PLAN_MUTATION = `
-		mutation DeletePlan($id: Int!) {
-			deletePlan(id: $id) {
-				success
-				message
-			}
-		}
-	`;
+	
 
 	// Load plans on mount
 	onMount(async () => {

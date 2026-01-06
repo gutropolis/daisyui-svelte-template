@@ -16,7 +16,7 @@ from pathlib import Path
 import django.utils.translation as translation
 from django.dispatch.dispatcher import Signal
 from decouple import config
-
+from corsheaders.defaults import default_headers
 # Temporary bridge for third-party packages that still expect the old ugettext helpers
 if not hasattr(translation, 'ugettext'):
     translation.ugettext = translation.gettext
@@ -117,6 +117,11 @@ GRAPHENE = {
     'SCHEMA': 'config.schema.schema',
     'MIDDLEWARE': [
         'graphql_jwt.middleware.JSONWebTokenMiddleware'
+    ],
+    'MUTATION_CLASSES': [
+        'graphql_jwt.mutations.ObtainJSONWebToken',
+        'graphql_jwt.refresh_token.mutations.Refresh',
+        'graphql_jwt.refresh_token.mutations.Revoke',
     ]
 }
 
@@ -134,6 +139,12 @@ GRAPHQL_JWT = {
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
+    "http://localhost:4173",
+    "http://127.0.0.1:5173",  # Include this if you access via IP
+]
+
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    'x-xsrf-token',
 ]
 
 CORS_ALLOW_CREDENTIALS = True

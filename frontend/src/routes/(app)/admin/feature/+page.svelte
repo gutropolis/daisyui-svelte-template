@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { authStore } from '$lib/stores/auth';
+	import { onMount } from 'svelte'; 
 	import { graphqlClient } from '$lib/graphql/client';
 	import type { PlanFeatureType } from '$lib/modal/user';
+	import { CREATE_PLAN_FEATURE, DELETE_PLAN_FEATURE, PLAN_FEATURES_QUERY, UPDATE_PLAN_FEATURE } from '$lib/gql/plan';
 
 	// State
 	let features: PlanFeatureType[] = [];
@@ -19,67 +19,7 @@
 		description: ''
 	};
 
-	// GraphQL Queries
-	const PLAN_FEATURES_QUERY = `
-		query {
-			planFeatures {
-				success
-				message
-				data {
-					id
-					keyName
-					name
-					description
-					createdAt
-					updatedAt
-				}
-			}
-		}
-	`;
-
-	const CREATE_PLAN_FEATURE = `
-		mutation CreatePlanFeature($input: CreatePlanFeatureInput!) {
-			createPlanFeature(input: $input) {
-				success
-				message
-				data {
-					id
-					keyName
-					name
-					description
-					createdAt
-					updatedAt
-				}
-			}
-		}
-	`;
-
-	const UPDATE_PLAN_FEATURE = `
-		mutation UpdatePlanFeature($id: Int!, $input: UpdatePlanFeatureInput!) {
-			updatePlanFeature(id: $id, input: $input) {
-				success
-				message
-				data {
-					id
-					keyName
-					name
-					description
-					createdAt
-					updatedAt
-				}
-			}
-		}
-	`;
-
-	const DELETE_PLAN_FEATURE = `
-		mutation DeletePlanFeature($id: Int!) {
-			deletePlanFeature(id: $id) {
-				success
-				message
-			}
-		}
-	`;
-
+	
 	// Load features on mount
 	onMount(async () => {
 		await loadFeatures();

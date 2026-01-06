@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { PROJECT_DETAIL_SETUP_ROUTE } from '$lib/enums/routes';
+	import { getStatusColor, getStatusIcon } from '$lib/utils/projecthelper';
 	import { resolveProjectRoute } from '$lib/utils/routes';
 
 	interface ValidationItem {
@@ -65,44 +66,8 @@
 	const projectId = $derived($page.params.projectId ?? '1');
 	const setupOverviewRoute = $derived(resolveProjectRoute(PROJECT_DETAIL_SETUP_ROUTE, projectId));
 
-	const getStatusColor = (status: string) => {
-		switch (status) {
-			case 'complete':
-				return 'text-green-600';
-			case 'warning':
-				return 'text-orange-600';
-			case 'incomplete':
-				return 'text-red-600';
-			default:
-				return 'text-gray-600';
-		}
-	};
-
-	const getStatusBgColor = (status: string) => {
-		switch (status) {
-			case 'complete':
-				return 'bg-green-100';
-			case 'warning':
-				return 'bg-orange-100';
-			case 'incomplete':
-				return 'bg-red-100';
-			default:
-				return 'bg-gray-100';
-		}
-	};
-
-	const getStatusIcon = (status: string) => {
-		switch (status) {
-			case 'complete':
-				return 'fa-check-circle';
-			case 'warning':
-				return 'fa-exclamation-circle';
-			case 'incomplete':
-				return 'fa-times-circle';
-			default:
-				return 'fa-circle';
-		}
-	};
+ 
+ 
 
 	const completeItems = validationItems.filter(v => v.status === 'complete').length;
 	const totalItems = validationItems.length;

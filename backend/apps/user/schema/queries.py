@@ -1,9 +1,17 @@
 import graphene
-from graphql_auth.schema import MeQuery, UserQuery as AuthUserQuery
+from graphql_auth.schema import UserQuery as AuthUserQuery
 from .types import UserType
 
 
-class UserQuery(MeQuery, AuthUserQuery, graphene.ObjectType):
-    # Additional user queries can be added here
-    # For example, user profile, user list, etc.
-    pass
+class UserQuery(graphene.ObjectType):
+    # Override the me field with custom UserType that includes full_name
+    me = graphene.Field(UserType)
+    # Inherit user and users from AuthUserQuery
+    user = AuthUserQuery.user
+    users = AuthUserQuery.users
+
+    def resolve_me(self, info):
+        user = info.context.user
+        if user.is_authenticated:
+            return user
+        return None

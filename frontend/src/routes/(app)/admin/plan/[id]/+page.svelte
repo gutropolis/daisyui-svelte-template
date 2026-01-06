@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/navigation';
+	import { GET_PLAN_QUERY, PLAN_FEATURES_QUERY } from '$lib/gql/plan';
 	import { graphqlClient } from '$lib/graphql/client';
 	import { onMount } from 'svelte';
 
@@ -10,40 +11,7 @@
 
 	const planId = parseInt($page.params.id);
 
-	const GET_PLAN_QUERY = `
-		query GetPlan($id: Int!) {
-			plan(id: $id) {
-				success
-				message
-				data {
-					id
-					slug
-					name
-					price
-					durationDays
-					maxUsers
-					maxStudies
-					maxStorageGb
-					features
-					createdAt
-					updatedAt
-				}
-			}
-		}
-	`;
-
-	const PLAN_FEATURES_QUERY = `
-		query {
-			planFeatures {
-				success
-				message
-				data {
-					id
-					name
-				}
-			}
-		}
-	`;
+	
 
 	// Load plan and features
 	async function loadData() {

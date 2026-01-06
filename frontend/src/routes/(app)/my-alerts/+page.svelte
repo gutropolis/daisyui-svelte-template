@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import AlertNotificationModal from '$lib/components/alerts/AlertNotificationModal.svelte';
+	import AlertNotificationModal from '$theme/alerts/AlertNotificationModal.svelte';
 
 	interface Alert {
 		id: number;

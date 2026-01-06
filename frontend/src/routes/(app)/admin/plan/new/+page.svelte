@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { CREATE_PLAN_MUTATION, PLAN_FEATURES_QUERY } from '$lib/gql/plan';
 	import { graphqlClient } from '$lib/graphql/client';
 
 	let loading = false;
@@ -7,41 +8,7 @@
 	let features: Array<{ id: number; name: string }> = [];
 	let selectedFeatures: Set<number> = new Set();
 
-	const PLAN_FEATURES_QUERY = `
-		query {
-			planFeatures {
-				success
-				message
-				data {
-					id
-					name
-				}
-			}
-		}
-	`;
-
-	const CREATE_PLAN_MUTATION = `
-		mutation CreatePlan($input: CreatePlanInput!) {
-			createPlan(input: $input) {
-				success
-				message
-				data {
-					id
-					slug
-					name
-					price
-					durationDays
-					maxUsers
-					maxStudies
-					maxStorageGb
-					features
-					createdAt
-					updatedAt
-				}
-			}
-		}
-	`;
-
+	
 	let formData = {
 		slug: '',
 		name: '',

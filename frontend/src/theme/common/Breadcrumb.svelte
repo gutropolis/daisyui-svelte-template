@@ -25,15 +25,12 @@
 	}
 
 	$: breadcrumbs = generateBreadcrumbs();
-	$: currentTitle = breadcrumbs[breadcrumbs.length - 1]?.label ?? 'Dashboard';
+ 
 </script>
 
 <section class="mb-6">
-	<div class="flex flex-col gap-1">
-		<p class="text-xs font-semibold uppercase tracking-widest text-gray-400">Overview</p>
-		<h1 class="text-2xl font-semibold text-gray-900">{currentTitle}</h1>
-	</div>
-	<nav aria-label="Breadcrumb" class="mt-3 flex items-center gap-2 text-sm text-gray-500">
+	 
+	<nav aria-label="Breadcrumb" class="mt-3 flex items-center gap-1 text-sm text-gray-500">
 		{#each breadcrumbs as item, index}
 			{#if item.href}
 				<a

@@ -1,10 +1,11 @@
-<script lang="ts">
-	import { authStore } from '$lib/stores/auth';
-
+<script lang="ts"> 
+    import { authUser }   from '$lib/stores/app';
 	interface Props {
 		sidebarOpen: boolean;
 		onToggleSidebar: () => void;
 	}
+
+	 
 
 	let { sidebarOpen, onToggleSidebar } = $props<Props>();
 	const iconButtonClasses =
@@ -19,10 +20,10 @@
 		return fullName[0].toUpperCase();
 	};
 </script>
-
-<header class="sticky top-0 z-40 px-4 py-3 text-slate-900 dark:text-slate-100">
+ 
+<header class="sticky top-0 z-40   py-1 text-slate-900 dark:text-slate-100">
 	<div
-		class="mx-auto flex w-full max-w-6xl items-center gap-6 rounded-[28px] border border-slate-200/80 bg-white/80 px-5 py-3 shadow-[0_18px_50px_rgba(15,23,42,0.12)] backdrop-blur-2xl transition dark:border-white/10 dark:bg-slate-900/70 dark:shadow-[0_18px_50px_rgba(2,6,23,0.7)]"
+		class="mx-auto flex w-full items-center gap-6 border border-slate-200/80 bg-white/80 px-6 py-3 shadow-[0_18px_50px_rgba(15,23,42,0.12)] backdrop-blur-2xl transition dark:border-white/10 dark:bg-slate-900/70 dark:shadow-[0_18px_50px_rgba(2,6,23,0.7)]"
 	>
 		<div class="flex flex-1 items-center gap-4">
 			<button
@@ -38,13 +39,9 @@
 				</svg>
 			</button>
 			<a href="/" class="flex items-center gap-3">
-				<div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-400 via-fuchsia-500 to-cyan-400 text-white shadow-inner">
-					<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6l7 4-7 4-7-4 7-4z M5 15l7 4 7-4" />
-					</svg>
-				</div>
+			 
 				<div>
-					<p class="text-sm font-semibold tracking-wide">Minible Boards</p>
+					<p class="text-lg font-semibold tracking-wide">Clinical Trial</p>
 					<p class="text-xs text-slate-500 dark:text-slate-400">Operational Console</p>
 				</div>
 			</a>
@@ -68,22 +65,22 @@
 			</button>
 			<div class="dropdown dropdown-end">
 				<button tabindex="0" class="flex items-center gap-3 rounded-[999px] border border-slate-200/70 bg-white/70 px-2.5 py-1.5 text-left text-sm font-medium shadow-sm transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-lg dark:border-white/10 dark:bg-white/10">
-					{#if $authStore.user?.avatarUrl}
+					{#if $authUser?.fullName}
 						<div class="avatar">
 							<div class="w-10 rounded-full">
-								<img src={$authStore.user.avatarUrl} alt="User avatar" />
+								<img src={$authUser?.avatar || 'https://picsum.photos/seed/user/80/80'} alt="User avatar" />
 							</div>
 						</div>
 					{:else}
 						<div class="avatar placeholder">
 							<div class="w-10 rounded-full bg-gradient-to-br from-indigo-500 to-sky-400 text-white">
-								<span class="text-sm font-semibold">{getUserInitials($authStore.user?.fullName)}</span>
+								<span class="text-sm font-semibold">{getUserInitials($authUser?.firstName)}</span>
 							</div>
 						</div>
 					{/if}
 					<div class="hidden text-left leading-tight sm:block">
-						<p class="text-sm font-semibold">{$authStore.user?.fullName || 'Amelia Carter'}</p>
-						<p class="text-xs text-slate-500 dark:text-slate-400">{$authStore.user?.role || 'Product Ops'}</p>
+						<p class="text-sm font-semibold">{$authUser?.fullName || 'Amelia Carter'}</p>
+						<p class="text-xs text-slate-500 dark:text-slate-400">{$authUser?.role || 'Product Ops'}</p>
 					</div>
 					<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-500 dark:text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 9l-7 7-7-7" />

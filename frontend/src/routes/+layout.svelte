@@ -8,19 +8,16 @@
 	import './layout.css';
 	import Progress from '$theme/common/Progress.svelte';
 	import { cacheExchange, createClient, fetchExchange, setContextClient } from '@urql/svelte';
-	import createGqlClient from '$lib/gql/client';
+	import { authUser } from '$lib/stores/app';
+	import client from '$lib/gql/client';
 
-	let { children } = $props();
+	let { data, children } = $props();
+
 	let sidebarOpen = $state(false);
 
-	const urqlClient = browser
-		? createGqlClient()
-		: createClient({
-				url: GRAPHQL_PATH,
-				exchanges: [cacheExchange, fetchExchange]
-		  });
-
-	setContextClient(urqlClient);
+	 
+   authUser.set(data?.authUser);
+    setContextClient(client);  
 
 	function toggleSidebar() {
 		sidebarOpen = !sidebarOpen;

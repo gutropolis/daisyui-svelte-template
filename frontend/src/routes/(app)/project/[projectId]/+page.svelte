@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { PROJECT_DETAIL_ROUTE } from '$lib/enums/routes';
+	import { getStatusColor, getStatusIcon } from '$lib/utils/projecthelper';
 	import { resolveProjectRoute } from '$lib/utils/routes';
 
 	interface FormField {
@@ -123,35 +124,8 @@
 	let selectedForm = 'demographics';
 	let formStatus = 'Draft';
 
-	const getStatusColor = (status: string) => {
-		switch (status) {
-			case 'Complete':
-				return 'bg-green-100 text-green-800';
-			case 'Incomplete':
-				return 'bg-yellow-100 text-yellow-800';
-			case 'Unverified':
-				return 'bg-blue-100 text-blue-800';
-			case 'Draft':
-				return 'bg-gray-100 text-gray-800';
-			default:
-				return 'bg-gray-100 text-gray-800';
-		}
-	};
-
-	const getStatusIcon = (status: string) => {
-		switch (status) {
-			case 'Complete':
-				return 'fa-check-circle text-green-600';
-			case 'Incomplete':
-				return 'fa-exclamation-circle text-yellow-600';
-			case 'Unverified':
-				return 'fa-question-circle text-blue-600';
-			case 'Draft':
-				return 'fa-pen-square text-gray-600';
-			default:
-				return 'fa-circle text-gray-600';
-		}
-	};
+ 
+ 
 
 	const createNewRecord = () => {
 		if (!newPatientId.trim()) return;

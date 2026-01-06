@@ -4,7 +4,7 @@
 install-backendmake:
 	cd backend && python3.13 -m venv .venv && ./.venv/bin/pip install -r requirements.txt
 
-run-backend:
+website-api:
 	cd backend && ./.venv/bin/python manage.py runserver
 
 migrate:
@@ -68,7 +68,7 @@ clean-backend:
 install-frontend:
 	export PATH="$(HOME)/.local/node22/bin:$$PATH" && cd frontend && yarn
 
-run-frontend:
+website-dev:
 	export PATH="$(HOME)/.local/node22/bin:$$PATH" && cd frontend && yarn dev
 
 build-frontend:

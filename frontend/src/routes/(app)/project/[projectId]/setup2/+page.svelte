@@ -1,10 +1,10 @@
 <script lang="ts">
-	import ProjectSetup from '$lib/components/projectsetup/ProjectSetup.svelte';
-	import EventSetup from '$lib/components/projectsetup/EventSetup.svelte';
-	import SiteSetup from '$lib/components/projectsetup/SiteSetup.svelte';
-	import Imaging from '$lib/components/projectsetup/Imaging.svelte';
-	import Clinical from '$lib/components/projectsetup/Clinical.svelte';
-	import EventMatrix from '$lib/components/projectsetup/EventMatrix.svelte';
+	import ProjectSetup from '$theme/projectsetup/ProjectSetup.svelte';
+	import EventSetup from '$theme//projectsetup/EventSetup.svelte';
+	import SiteSetup from '$theme//projectsetup/SiteSetup.svelte';
+	import Imaging from '$theme//projectsetup/Imaging.svelte';
+	import Clinical from '$theme//projectsetup/Clinical.svelte';
+	import EventMatrix from '$theme//projectsetup/EventMatrix.svelte';
 
 	let activeTab = 'project';
 

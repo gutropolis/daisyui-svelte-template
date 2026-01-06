@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { PROJECT_ANALYSIS_ROUTE, PROJECT_DETAIL_DASHBOARD_ROUTE } from "$lib/enums/routes";
+	import { getStatusColor } from "$lib/utils/projecthelper";
 
 	interface Project {
 		id: string;
@@ -251,18 +252,7 @@
 		}
 	];
 
-	const getStatusColor = (status: string) => {
-		switch (status) {
-			case 'production':
-				return 'bg-green-100 text-green-800';
-			case 'staging':
-				return 'bg-blue-100 text-blue-800';
-			case 'development':
-				return 'bg-yellow-100 text-yellow-800';
-			default:
-				return 'bg-gray-100 text-gray-800';
-		}
-	};
+ 
 
 	const formatStatus = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 

@@ -12,7 +12,8 @@ export   interface User {
 	uid?: string; 
 	email?: string; 
 	firstName?:string;
-	lastName?:string;
+	lastName?:string; 
+	fullName?:string;
 	contact_number?:string; 
 	company?:string;
 	country?:string;
@@ -34,5 +35,26 @@ export interface UserBasic {
 	avtar?: string;
 	isVerified?: string;
 	status?:ACCOUNT_STATUS;
-} 
+}
+
+export interface Feature {
+	id: number;
+	keyName?: string;
+	name: string;
+	description?: string;
+	createdAt?: string;
+	updatedAt?: string;
+}
+
+export interface PermissionType {
+	id: number;
+	keyName: string;
+	name: string;
+	description?: string;
+	icon?: string;
+	featureId: number;
+	feature?: Feature;
+	createdAt?: string;
+	updatedAt?: string;
+}
  
