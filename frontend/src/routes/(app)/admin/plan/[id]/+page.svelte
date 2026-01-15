@@ -1,37 +1,45 @@
 <script lang="ts">
-	import { page } from '$app/navigation';
-	import { GET_PLAN_QUERY, PLAN_FEATURES_QUERY } from '$lib/gql/plan';
-	import { graphqlClient } from '$lib/graphql/client';
+	import { page } from '$app/stores';
+	import { GET_PLAN_QUERY, PLAN_FEATURES_QUERY } from '$lib/gql/plan'; 
+	import { getContextClient } from '@urql/svelte';
+	import { handleGqlErr } from '$lib/utils/gqlfx'; 
+	import alerts from '$lib/stores/alerts';
 	import { onMount } from 'svelte';
+
+	const client = getContextClient();
 
 	let loading = false;
 	let error = '';
 	let plan: any = null;
 	let allFeatures: Array<{ id: number; name: string }> = [];
 
-	const planId = parseInt($page.params.id);
+	$: planId = parseInt($page.params.id);
 
 	
-
+ 
 	// Load plan and features
 	async function loadData() {
+		let title="Load features and plan";
 		loading = true;
 		try {
 			// Load features
-			const featuresResponse = await graphqlClient.request(PLAN_FEATURES_QUERY);
-			if (featuresResponse.planFeatures.success) {
-				allFeatures = featuresResponse.planFeatures.data;
+			const featuresResponse = await client.query(PLAN_FEATURES_QUERY,{}).toPromise(); 
+			if (featuresResponse.error) {
+				alerts.error(title, featuresResponse.error.message);
+				return;
+			} 
+			if (featuresResponse.data.planFeatures.success) {
+				allFeatures = featuresResponse.data.planFeatures.data;
 			}
+			 
 
 			// Load plan
-			const planResponse = await graphqlClient.request(GET_PLAN_QUERY, {
-				id: planId
-			});
-
-			if (planResponse.plan.success) {
-				plan = planResponse.plan.data;
+		 
+			const planResponse = await client.query(GET_PLAN_QUERY,{id: planId }).toPromise(); 
+			if (planResponse.data.plan.success) {
+				plan = planResponse.data.plan.data;
 			} else {
-				error = planResponse.plan.message;
+				error = planResponse.data.plan.message;
 			}
 		} catch (err: any) {
 			error = `Failed to load plan: ${err.message}`;

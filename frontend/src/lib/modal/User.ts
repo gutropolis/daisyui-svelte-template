@@ -2,10 +2,9 @@
  * Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * Author: Ankit Patial
  */
-
-import type { ROLE } from '$lib/enums/role';
+ 
 import type{  ACCOUNT_STATUS  } from '$lib/enums/user';
-import type { Subscription } from '$lib/models/Subscription';
+import type { Subscription } from '$lib/modal/Subscription';
  
 export   interface User {
 	id?:number; 
@@ -37,24 +36,4 @@ export interface UserBasic {
 	status?:ACCOUNT_STATUS;
 }
 
-export interface Feature {
-	id: number;
-	keyName?: string;
-	name: string;
-	description?: string;
-	createdAt?: string;
-	updatedAt?: string;
-}
-
-export interface PermissionType {
-	id: number;
-	keyName: string;
-	name: string;
-	description?: string;
-	icon?: string;
-	featureId: number;
-	feature?: Feature;
-	createdAt?: string;
-	updatedAt?: string;
-}
  

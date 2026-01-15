@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
-	import { navigating } from '$app/state';
+	import { navigating } from '$app/stores';
 	import { GRAPHQL_PATH } from '$lib/enums/path';
 	import { createPortal } from '$lib/actions/portal';
 	import favicon from '$lib/assets/favicon.svg';

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	 
-	import type { PermissionType } from '$lib/modal/User';
+	import type { PermissionType } from '$lib/modal/Plan';
 	import PermissionForm from './PermissionForm.svelte';
 	import PermissionList from './PermissionList.svelte';
 	import PaginationModal from './PaginationModal.svelte';
@@ -86,25 +86,21 @@
 				filterInput.search = searchTerm;
 			}
 
-			const res = await client.query(PERMISSIONS_QUERY, {
+			const response = await client.query(PERMISSIONS_QUERY, {
 				page: currentPage,
 				limit: 10,
 				filterInput: Object.keys(filterInput).length > 0 ? filterInput : null
 			}).toPromise();
 			 
           
-			if (res.error) {
-				alerts.error(title, res.error.message);
+			if (response.error) {
+				alerts.error(title, response.error.message);
 				return;
 			}
 
-			const response = await graphqlClient.request(PERMISSIONS_QUERY, {
-				page: currentPage,
-				limit: 10,
-				filterInput: Object.keys(filterInput).length > 0 ? filterInput : null
-			});
+		 
 
-			let permission =response.permissions;
+			let permission =response.data.permissions;
 
 			if (permission.success) {
 				permissions = permission.data;

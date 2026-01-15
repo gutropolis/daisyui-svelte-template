@@ -15,6 +15,18 @@ query Me {
         
         }
 }`;
+
+export const ALL_USERS_QUERY = gql`
+    query AllUsers($search: String, $isActive: Boolean) {
+        allUsers(search: $search, isActive: $isActive) {
+            id
+            firstName
+            lastName
+            email
+            role
+        }
+    }
+`;
  
 export const UpdateHostProfile = gql`
   mutation UpdateHostProfile($input: UserInput!) {

@@ -1,25 +1,17 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { graphqlClient } from '$lib/graphql/client';
+		import { onMount } from 'svelte'; 
+ 	import type { Plan  } from '$lib/modal/Plan';
+ 
+	import { DELETE_PLAN_MUTATION, PLANS_QUERY } from '$lib/gql/plan';
+	import alerts from '$lib/stores/alerts';
+	import { getContextClient } from '@urql/svelte';
+	import { handleGqlErr } from '$lib/utils/gqlfx';    
+ 
 	import PlanCard from './PlanCard.svelte';
 	import FilterModal from './FilterModal.svelte';
 	import PaginationModal from './PaginationModal.svelte';
-	import { DELETE_PLAN_MUTATION, PLANS_QUERY } from '$lib/gql/plan';
-
-	interface Plan {
-		id: number;
-		slug: string;
-		name: string;
-		price: string;
-		durationDays: number;
-		maxUsers: number | null;
-		maxStudies: number | null;
-		maxStorageGb: number | null;
-		features: number[];
-		createdAt: string;
-		updatedAt: string;
-	}
-
+	
+    const client = getContextClient();
 	// State
 	let plans: Plan[] = [];
 	let loading = false;
@@ -47,6 +39,7 @@
 
 	// Load plans
 	async function loadPlans() {
+		let title="Plans";
 		loading = true;
 		error = '';
 		try {
@@ -55,21 +48,26 @@
 				filterInput.search = searchTerm;
 			}
 
-			const response = await graphqlClient.request(PLANS_QUERY, {
+			const response = await client.query(PLANS_QUERY, {
 				page: currentPage,
 				limit: 10,
 				filterInput: Object.keys(filterInput).length > 0 ? filterInput : null
-			});
+			}).toPromise(); 
+			if (response.error) {
+				alerts.error(title, response.error.message);
+				return;
+			}
+		 
 
-			if (response.plans.success) {
-				plans = response.plans.data;
-				const pagination = response.plans.pagination;
+			if (response.data.plans.success) {
+				plans = response.data.plans.data;
+				const pagination = response.data.plans.pagination;
 				totalPages = pagination.totalPages;
 				total = pagination.total;
 				hasNext = pagination.hasNext;
 				hasPrev = pagination.hasPrev;
 			} else {
-				error = response.plans.message;
+				error = response.data.plans.message;
 			}
 		} catch (err: any) {
 			error = `Failed to load plans: ${err.message}`;
@@ -84,22 +82,30 @@
 		if (!confirm('Are you sure you want to delete this plan?')) {
 			return;
 		}
-
+		let title = "Delete Plan";
 		loading = true;
 		error = '';
 		success = '';
 
 		try {
-			const response = await graphqlClient.request(DELETE_PLAN_MUTATION, {
-				id
-			});
 
-			if (response.deletePlan.success) {
+			
+			const response = await client.mutation(DELETE_PLAN_MUTATION, {
+				id
+			}).toPromise();
+			if (response.error) {
+				alerts.error(title, response.error.message);
+				return;
+			}
+		 
+ 
+
+			if (response.data.deletePlan.success) {
 				success = 'Plan deleted successfully!';
 				await loadPlans();
 				setTimeout(() => (success = ''), 3000);
 			} else {
-				error = response.deletePlan.message;
+				error = response.data.deletePlan.message;
 			}
 		} catch (err: any) {
 			error = `Failed to delete plan: ${err.message}`;

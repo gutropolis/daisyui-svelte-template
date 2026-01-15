@@ -184,7 +184,7 @@ import { gql } from '@urql/svelte';
  
 
 	export const CREATE_PLAN_MUTATION = gql`
-		mutation CreatePlan($input: CreatePlanInput!) {
+		mutation CreatePlan($input: PlanInput!) {
 			createPlan(input: $input) {
 				success
 				message
@@ -206,7 +206,7 @@ import { gql } from '@urql/svelte';
 	`;
 
     export const UPDATE_PLAN_MUTATION = gql`
-		mutation UpdatePlan($id: Int!, $input: UpdatePlanInput!) {
+		mutation UpdatePlan($id: Int!, $input: PlanInput!) {
 			updatePlan(id: $id, input: $input) {
 				success
 				message

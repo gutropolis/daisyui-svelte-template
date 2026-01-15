@@ -1,72 +1,42 @@
 import { gql } from '@urql/svelte';
-export const QryMe= gql`
-query Me {
-        me  {
-        
-            id
-            firstName
-            lastName
-            slug
-            email
-            company
-            contactNumber
-            role
-            __typename      
-        
-        }
-}`;
-export const QryPlans = gql`
-    query Plans {
-        plans{
-            id
-            slug
-            planName
-            maxUsers
-            price
-            description
-            durationDays
-            isActive
-            features{
-                name
-                description
-            }
-        }
-    }
-    
-`;
-export const QryPlanDetail = gql`
-    query PlanById($slug: String!) {
-        planById(slug: $slug){
-            id
-            slug
-            planName
-            maxUsers
-            price
-            description
-            durationDays
-            isActive
-            features{
-                name
-                description
-            }
-        }
-    }`;
 
-export const CreateStripeOrder = gql`
-  mutation MakeStripeOrder($input: PaymentInput!) {
-    makeStripeOrder(input: $input) {
-      status
-      message 
-    }
-  }
+export const SUBSCRIPTIONS_QUERY = gql`
+	query Subscriptions($userId: ID, $status: String) {
+		subscriptions(userId: $userId, status: $status) {
+			id
+			startDate
+			endDate
+			status
+			paidStatus
+			autoRenew
+			createdAt
+			updatedAt
+			plan {
+				id
+				slug
+				name
+				price
+				durationDays
+			}
+			user {
+				id
+				firstName
+				lastName
+				email
+			}
+		}
+	}
 `;
 
-export const CreatePaymentIntent = gql`
-  mutation InitiatePayment($input: PaymentIntentInput!) {
-    initiatePayment(input: $input) {
-      status
-      message
-      intentId
-    }
-  }
-`; 
+export const CREATE_SUBSCRIPTION_MUTATION = gql`
+	mutation CreateSubscription($input: SubscriptionInput!) {
+		createSubscription(input: $input) {
+			subscription {
+				id
+				status
+				startDate
+				endDate
+			}
+		}
+	}
+`;

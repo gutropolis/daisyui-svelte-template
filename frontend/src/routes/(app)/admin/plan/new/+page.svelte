@@ -1,8 +1,10 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { CREATE_PLAN_MUTATION, PLAN_FEATURES_QUERY } from '$lib/gql/plan';
-	import { graphqlClient } from '$lib/graphql/client';
+	import { CREATE_PLAN_MUTATION, PLAN_FEATURES_QUERY } from '$lib/gql/plan'; 
+	import { getContextClient } from '@urql/svelte';
+	import { handleGqlErr } from '$lib/utils/gqlfx'; 
 
+	const client = getContextClient();
 	let loading = false;
 	let error = '';
 	let features: Array<{ id: number; name: string }> = [];
@@ -21,10 +23,15 @@
 
 	// Load features on mount
 	async function loadFeatures() {
+		let title="New Plan";
 		try {
-			const response = await graphqlClient.request(PLAN_FEATURES_QUERY);
-			if (response.planFeatures.success) {
-				features = response.planFeatures.data;
+			const response = await client.query(PLAN_FEATURES_QUERY,{}).toPromise(); 
+			if (response.error) {
+				alerts.error(title, response.error.message);
+				return;
+			} 
+			if (response.data.planFeatures.success) {
+				features = response.data.planFeatures.data;
 			}
 		} catch (err: any) {
 			console.error('Failed to load features:', err);
@@ -42,6 +49,7 @@
 	}
 
 	async function handleSubmit() {
+		let title="Create Plan";
 		if (!formData.slug || !formData.name || !formData.price || !formData.durationDays) {
 			error = 'Slug, name, price, and duration are required';
 			return;
@@ -56,7 +64,8 @@
 		error = '';
 
 		try {
-			const response = await graphqlClient.request(CREATE_PLAN_MUTATION, {
+
+			 const response = await client.mutation(CREATE_PLAN_MUTATION, {
 				input: {
 					slug: formData.slug,
 					name: formData.name,
@@ -66,13 +75,21 @@
 					maxStudies: formData.maxStudies ? parseInt(formData.maxStudies) : null,
 					maxStorageGb: formData.maxStorageGb ? parseInt(formData.maxStorageGb) : null,
 					features: Array.from(selectedFeatures)
-				}
-			});
+				}}).toPromise(); 
 
-			if (response.createPlan.success) {
+        
+        if (response.error) {
+            const errMsg = handleGqlErr(response.error);
+            alerts.error(title, errMsg);
+            return "";
+        }
+
+			 
+
+			if (response.data.createPlan.success) {
 				goto('/admin/plan');
 			} else {
-				error = response.createPlan.message;
+				error = response.data.createPlan.message;
 			}
 		} catch (err: any) {
 			error = `Failed to create plan: ${err.message}`;
@@ -84,6 +101,7 @@
 
 	// Load features on component mount
 	import { onMount } from 'svelte';
+	import alerts from '$lib/stores/alerts';
 	onMount(() => loadFeatures());
 </script>
 

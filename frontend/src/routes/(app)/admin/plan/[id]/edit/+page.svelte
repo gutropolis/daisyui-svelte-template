@@ -1,17 +1,22 @@
 <script lang="ts">
-	import { goto, page } from '$app/navigation';
+	import { page } from '$app/stores';
+	import { goto } from '$app/navigation';
 	import { GET_PLAN_QUERY, PLAN_FEATURES_QUERY, UPDATE_PLAN_MUTATION } from '$lib/gql/plan';
-	import { graphqlClient } from '$lib/graphql/client';
+	import { getContextClient } from '@urql/svelte';
+	import { handleGqlErr } from '$lib/utils/gqlfx'; 
 	import { onMount } from 'svelte';
+	import alerts from '$lib/stores/alerts';
+
+	const client = getContextClient();
 
 	let loading = false;
 	let error = '';
 	let success = '';
-	let features: Array<{ id: number; name: string }> = [];
+	let features: Array<{ id: number | string; name: string }> = [];
 	let selectedFeatures: Set<number> = new Set();
 	let plan: any = null;
 
-	const planId = parseInt($page.params.id);
+	$:planId = parseInt($page.params.id);
 
 	 
 	
@@ -25,23 +30,41 @@
 		maxStorageGb: ''
 	};
 
+	const normalizeFeatureId = (value: number | string) => Number(value);
+
+	// Load features on mount
+	async function loadFeatures() {
+		let title="New Plan";
+		try {
+			const response = await client.query(PLAN_FEATURES_QUERY,{}).toPromise(); 
+			if (response.error) {
+				alerts.error(title, response.error.message);
+				return;
+			} 
+			if (response.data.planFeatures.success) {
+				features = response.data.planFeatures.data;
+			}
+		} catch (err: any) {
+			console.error('Failed to load features:', err);
+		}
+	}
 	// Load plan and features
 	async function loadData() {
+		await loadFeatures();
+		let title="Edit Plan";
 		loading = true;
 		try {
 			// Load features
-			const featuresResponse = await graphqlClient.request(PLAN_FEATURES_QUERY);
-			if (featuresResponse.planFeatures.success) {
-				features = featuresResponse.planFeatures.data;
-			}
+			const planResponse = await client.query(GET_PLAN_QUERY,{id: planId}).toPromise(); 
+			if (planResponse.error) {
+				alerts.error(title, planResponse.error.message);
+				return;
+			} 
+			 
 
-			// Load plan
-			const planResponse = await graphqlClient.request(GET_PLAN_QUERY, {
-				id: planId
-			});
-
-			if (planResponse.plan.success) {
-				plan = planResponse.plan.data;
+		 
+			if (planResponse.data.plan.success) {
+				plan = planResponse.data.plan.data;
 				formData = {
 					name: plan.name,
 					price: plan.price,
@@ -50,9 +73,10 @@
 					maxStudies: plan.maxStudies?.toString() || '',
 					maxStorageGb: plan.maxStorageGb?.toString() || ''
 				};
-				selectedFeatures = new Set(plan.features);
+				const featureIds = Array.isArray(plan.features) ? plan.features : [];
+				selectedFeatures = new Set(featureIds.map(normalizeFeatureId));
 			} else {
-				error = planResponse.plan.message;
+				error = planResponse.data.plan.message;
 			}
 		} catch (err: any) {
 			error = `Failed to load plan: ${err.message}`;
@@ -63,13 +87,14 @@
 	}
 
 	// Toggle feature
-	function toggleFeature(featureId: number) {
-		if (selectedFeatures.has(featureId)) {
-			selectedFeatures.delete(featureId);
+	function toggleFeature(featureId: number | string) {
+		const normalizedId = normalizeFeatureId(featureId);
+		if (selectedFeatures.has(normalizedId)) {
+			selectedFeatures.delete(normalizedId);
 		} else {
-			selectedFeatures.add(featureId);
+			selectedFeatures.add(normalizedId);
 		}
-		selectedFeatures = selectedFeatures;
+		selectedFeatures = new Set(selectedFeatures);
 	}
 
 	async function handleSubmit() {
@@ -88,7 +113,8 @@
 		success = '';
 
 		try {
-			const response = await graphqlClient.request(UPDATE_PLAN_MUTATION, {
+
+			const response = await client.mutation(UPDATE_PLAN_MUTATION, {
 				id: planId,
 				input: {
 					name: formData.name,
@@ -99,13 +125,15 @@
 					maxStorageGb: formData.maxStorageGb ? parseInt(formData.maxStorageGb) : null,
 					features: Array.from(selectedFeatures)
 				}
-			});
+				 }).toPromise(); 
 
-			if (response.updatePlan.success) {
+	 
+
+			if (response.data.updatePlan.success) {
 				success = 'Plan updated successfully!';
 				setTimeout(() => goto('/admin/plan'), 2000);
 			} else {
-				error = response.updatePlan.message;
+				error = response.data.updatePlan.message;
 			}
 		} catch (err: any) {
 			error = `Failed to update plan: ${err.message}`;
@@ -278,7 +306,7 @@
 									<label class="flex items-center gap-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
 										<input
 											type="checkbox"
-											checked={selectedFeatures.has(feature.id)}
+											checked={selectedFeatures.has(normalizeFeatureId(feature.id))}
 											on:change={() => toggleFeature(feature.id)}
 											class="w-5 h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
 										/>

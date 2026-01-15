@@ -30,7 +30,7 @@
 </script>
 
 <svelte:head>
-	<link rel="icon" href={favicon} />
+	import { navigating } from '$app/stores';
 </svelte:head>
 
 {#if navigating}

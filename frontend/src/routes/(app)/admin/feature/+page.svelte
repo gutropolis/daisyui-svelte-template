@@ -1,11 +1,15 @@
 <script lang="ts">
 	import { onMount } from 'svelte'; 
-	import { graphqlClient } from '$lib/graphql/client';
-	import type { PlanFeatureType } from '$lib/modal/user';
-	import { CREATE_PLAN_FEATURE, DELETE_PLAN_FEATURE, PLAN_FEATURES_QUERY, UPDATE_PLAN_FEATURE } from '$lib/gql/plan';
+ 	import type { PermissionType,Feature } from '$lib/modal/Plan';
+ 
+	import { CREATE_PLAN_FEATURE, DELETE_PLAN_FEATURE, PLAN_FEATURES_QUERY, UPDATE_PLAN_FEATURE } from '$lib/gql/plan'; 
+	import alerts from '$lib/stores/alerts';
+	import { getContextClient } from '@urql/svelte';
+	import { handleGqlErr } from '$lib/utils/gqlfx';    
 
+	const client = getContextClient();
 	// State
-	let features: PlanFeatureType[] = [];
+	let features: Feature[] = [];
 	let loading = false;
 	let error = '';
 	let success = '';
@@ -27,15 +31,20 @@
 
 	// Load all features
 	async function loadFeatures() {
+		let title = "Features";
 		loading = true;
 		error = '';
 		try {
-			const response = await graphqlClient.request(PLAN_FEATURES_QUERY);
-			if (response.planFeatures.success) {
-				features = response.planFeatures.data;
-			} else {
-				error = response.planFeatures.message;
+
+			const res = await client.query(PLAN_FEATURES_QUERY, {}).toPromise(); 
+			if (res.error) {
+				alerts.error(title, res.error.message);
+				return;
 			}
+		   features = res?.data?.planFeatures?.data;
+            console.log("Plan ",features);
+			
+			 
 		} catch (err: any) {
 			error = `Failed to load features: ${err.message}`;
 			console.error(err);
@@ -46,6 +55,7 @@
 
 	// Create new feature
 	async function handleCreate() {
+		let title = "Create Feature";
 		if (!formData.keyName || !formData.name) {
 			error = 'Key name and name are required';
 			return;
@@ -56,21 +66,27 @@
 		success = '';
 
 		try {
-			const response = await graphqlClient.request(CREATE_PLAN_FEATURE, {
+
+			  const response = await client.mutation(CREATE_PLAN_FEATURE, {
 				input: {
 					keyName: formData.keyName,
 					name: formData.name,
 					description: formData.description || null
-				}
-			});
+				}}).toPromise(); 
 
-			if (response.createPlanFeature.success) {
+        
+        if (response.error) {
+            const errMsg = handleGqlErr(response.error);
+            alerts.error(title, errMsg);
+            return "";
+        }
+           if (response.data.createPlanFeature.success) {
 				success = 'Feature created successfully!';
 				await loadFeatures();
 				resetForm();
 				setTimeout(() => (success = ''), 3000);
 			} else {
-				error = response.createPlanFeature.message;
+				error = response.data.createPlanFeature.message;
 			}
 		} catch (err: any) {
 			error = `Failed to create feature: ${err.message}`;
@@ -86,27 +102,34 @@
 			error = 'Name is required';
 			return;
 		}
-
+		let title = "Update Feature";
 		loading = true;
 		error = '';
 		success = '';
 
 		try {
-			const response = await graphqlClient.request(UPDATE_PLAN_FEATURE, {
-				id: editingId,
+
+			 const response = await client.mutation(UPDATE_PLAN_FEATURE, { id: editingId,
 				input: {
 					name: formData.name,
 					description: formData.description || null
-				}
-			});
+				}}).toPromise(); 
 
-			if (response.updatePlanFeature.success) {
+        
+        if (response.error) {
+            const errMsg = handleGqlErr(response.error);
+            alerts.error(title, errMsg);
+            return "";
+        }
+			 
+
+			if (response.data.updatePlanFeature.success) {
 				success = 'Feature updated successfully!';
 				await loadFeatures();
 				resetForm();
 				setTimeout(() => (success = ''), 3000);
 			} else {
-				error = response.updatePlanFeature.message;
+				error = response.data.updatePlanFeature.message;
 			}
 		} catch (err: any) {
 			error = `Failed to update feature: ${err.message}`;
@@ -125,18 +148,27 @@
 		loading = true;
 		error = '';
 		success = '';
-
+		let title = "Delete Feature";
 		try {
-			const response = await graphqlClient.request(DELETE_PLAN_FEATURE, {
-				id
-			});
 
-			if (response.deletePlanFeature.success) {
+			 const response = await client.mutation(DELETE_PLAN_FEATURE, {
+				id}).toPromise(); 
+
+        
+        if (response.error) {
+            const errMsg = handleGqlErr(response.error);
+            alerts.error(title, errMsg);
+            return "";
+        }
+			 
+
+			 
+			if (response.data.deletePlanFeature.success) {
 				success = 'Feature deleted successfully!';
 				await loadFeatures();
 				setTimeout(() => (success = ''), 3000);
 			} else {
-				error = response.deletePlanFeature.message;
+				error = response.data.deletePlanFeature.message;
 			}
 		} catch (err: any) {
 			error = `Failed to delete feature: ${err.message}`;
@@ -147,7 +179,7 @@
 	}
 
 	// Edit feature
-	function startEdit(feature: PlanFeatureType) {
+	function startEdit(feature: Feature) {
 		isEditing = true;
 		editingId = feature.id;
 		formData = {
